@@ -19,7 +19,7 @@ Once you have `jupyter` and `nbconvert` in your path, you should be able to use 
 Pkg.checkout("Weave") #Note that this functionality isn't in the published version yet
 ```
 
-At that point, you can test out the generation by going to this folder on your machine, and
+At that point, you can test out the generation by going to this folder on your machine and using one of the example files
 ```julia
 using Weave #don't worry about deprecation warnings
 
@@ -27,8 +27,11 @@ using Weave #don't worry about deprecation warnings
 notebook("test.jmd")
 notebook("test_2.jl")
 
-# At this point, graphics don't seem to correctly show, but the rest should run.
+# At this point, graphics don't seem to correctly show with this approach, but the rest should run.
 notebook("FIR_design.jl")
+
+#  Plotting can be done using the following pattern
+notebook("test_plotting.jmd")
 ```
 
 ## Using Weave

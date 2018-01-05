@@ -1,0 +1,13 @@
+# Example with Plotting 
+.
+
+## Capturing plots?
+The basic code chunk will be run with default options and the code and
+output will be captured.
+
+```julia
+using Plots
+gr(fmt=:png)
+p = plot(1:10)
+display(p)
+```
