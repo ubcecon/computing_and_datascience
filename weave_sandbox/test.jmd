@@ -11,7 +11,7 @@ output will be captured.
 
 ```julia
 a = 2
-println("a = ",a)
+println("VARIABLE a = ",a)
 ```
 
 You can also control the way the results are captured, plot size etc.
