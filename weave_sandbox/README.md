@@ -8,10 +8,9 @@
 ## Weave to Notebook Installation Instructions
  This relies on the Python and Jupyter ecosystem, so it will need to be installed if it is not already.
 
-1. If you have installed `JuliaPro`
-    - Jupyter and nbconvert are installed, but they may not be in your path.  You can test if they are by typing `jupyter` into a console
-    - If they are not, then them to the path based on your operating system.  For example, they might be in `C:\bin\JuliaPro-0.6.1.1\Python\Scripts` if you installed JuliaPro
-1. Without JuliaPro, it depends on how you installed python and jupyter.  If you didn't install nbconvert, then verify the installation with [nbconvert[(https://nbconvert.readthedocs.io/en/latest/install.html
+1. If you have installed Anaconda, Jupyter and nbconvert are installed, but they may not be in your path.  You can test if they are by typing `jupyter` into a console
+    - If they are not, then them to the path based on your operating system.  For example, they might be in `C:\bin\Anaconda3\Scripts` if you installed Anaconda in `c:\bin`
+1. If you didn't install nbconvert, then verify the installation with [nbconvert](https://nbconvert.readthedocs.io/en/latest/install.html)
     - **TODO:** It is unclear whether you need to have XeLaTeX installed just to generate a notebook
 
 Once you have `jupyter` and `nbconvert` in your path, you should be able to use Weave.  At this point, open a Julia REPL and checkout Weave from the master with
