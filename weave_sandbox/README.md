@@ -15,6 +15,7 @@
 
 Once you have `jupyter` and `nbconvert` in your path, you should be able to use Weave.  At this point, open a Julia REPL and checkout Weave from the master with
 ```julia
+Pkg.add("Weave")
 Pkg.checkout("Weave") #Note that this functionality isn't in the published version yet
 ```
 
