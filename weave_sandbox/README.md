@@ -16,7 +16,6 @@
 Once you have `jupyter` and `nbconvert` in your path, you should be able to use Weave.  At this point, open a Julia REPL and checkout Weave from the master with
 ```julia
 Pkg.add("Weave")
-Pkg.checkout("Weave") #Note that this functionality isn't in the published version yet
 ```
 
 At that point, you can test out the generation by going to this folder on your machine and using one of the example files
@@ -37,5 +36,8 @@ notebook("test_plotting.jmd")
 ## Using Weave
 See the documentation in [Weave.jl Docs](http://weavejl.mpastell.com/stable/)  There are two main approaches to writing the code, as outined in [Usage](http://weavejl.mpastell.com/stable/usage/):
 
-1. Special comments in an otherwise normal `.jl` file:  See [gadfly_md_sample.jmd](https://raw.githubusercontent.com/mpastell/Weave.jl/master/examples/gadfly_md_sample.jmd) as a good example
-1. Special code sections in an otherwise normal mardown file, called `.jmd`:  See [FIR_design.jl](https://github.com/mpastell/Weave.jl/blob/master/examples/FIR_design.jl)
+1. Special comments in an otherwise normal `.jl` file:  See  as a good example [FIR_design.jl](https://github.com/mpastell/Weave.jl/blob/master/examples/FIR_design.jl)
+1. Special code sections in an otherwise normal markdown file, called `.jmd`:  See  [gadfly_md_sample.jmd](https://raw.githubusercontent.com/mpastell/Weave.jl/master/examples/gadfly_md_sample.jmd)
+
+## Editing Weave Documents in Atom
+Within Atom, install the https://atom.io/packages/hydrogen and https://atom.io/packages/language-weave packages (or `apm install hydrogen` and `apm install language-weave` on the command-line).

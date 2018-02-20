@@ -10,3 +10,8 @@ a = 2 + 3
 #' # Display math?
 #' $a \equiv 2 + 3$
 
+#' # Plots may not save, but should work.
+using Plots
+gr()
+p = plot(1:10)
+display(p)
