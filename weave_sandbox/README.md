@@ -40,4 +40,4 @@ See the documentation in [Weave.jl Docs](http://weavejl.mpastell.com/stable/)  T
 1. Special code sections in an otherwise normal markdown file, called `.jmd`:  See  [gadfly_md_sample.jmd](https://raw.githubusercontent.com/mpastell/Weave.jl/master/examples/gadfly_md_sample.jmd)
 
 ## Editing Weave Documents in Atom
-Within Atom, install the https://atom.io/packages/hydrogen and https://atom.io/packages/language-weave packages (or `apm install hydrogen` and `apm install language-weave` on the command-line).
+See https://github.com/econtoolkit/tutorials/blob/master/atom.md for installation instructions

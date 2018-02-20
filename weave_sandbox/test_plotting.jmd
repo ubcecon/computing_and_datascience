@@ -4,7 +4,7 @@
 The basic code chunk will be run with default options and the code and
 output will be captured.  Right now it is set to `eval=false` because there are issues with the capturing of plots
 
-```{julia; eval=false}
+```{julia;eval=false}
 using Plots
 gr()
 p = plot(1:10)
