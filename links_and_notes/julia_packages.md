@@ -4,3 +4,4 @@
  - https://github.com/JuliaPraxis trying to collect best practices
  - https://github.com/saschatimme/SuperPolynomials.jl Mulivariate polynomials
  - https://github.com/oxinabox/DataDeps.jl/blob/master/README.md Data dependencies library, easy downloading, etc.
+ - https://github.com/timholy/ProgressMeter.jl/blob/master/README.md Displays iterations/etc. clearly in the REPL.
