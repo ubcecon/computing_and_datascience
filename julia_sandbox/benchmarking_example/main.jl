@@ -15,10 +15,10 @@ results = run(regressions)
 results = median(results)
 
 # Write results to file. 
-BenchmarkTools.save("julia_sandbox/benchmarking_example/benchmarks.json", results)
+BenchmarkTools.save("benchmarks.json", results)
 
 # Load results from file. 
-old = BenchmarkTools.load("julia_sandbox/benchmarking_example/benchmarks.json")[1]
+old = BenchmarkTools.load("benchmarks.json")[1]
 
 # Make judgment. 
 @show judgment = judge(old, results)
