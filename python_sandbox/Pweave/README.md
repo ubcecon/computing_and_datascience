@@ -20,9 +20,9 @@ pip install --upgrade Pweave
   ```
 
 # Examples 
-Check out Pweave example gallery [here](http://mpastell.com/pweave/examples/index.html)
+Check out Pweave example gallery [here](http://mpastell.com/pweave/examples/index.html). 
 
-# Basics
+# Steps to generate a Jupyter File 
 
 In Pweave, A code block begins with `<<>>=` or `<<options>>=` and end with `@` on a line by itself. The codes between the start and end markers are executed and code blocks appear in the LaTeX output by default. In Pweave you may also use `<% %>` to mark a code chunk which executed but does not echo its source. Pweave can also run codes from fenced markdown Python code chunks by using either of the following ways: 
   ```
@@ -30,7 +30,8 @@ In Pweave, A code block begins with `<<>>=` or `<<options>>=` and end with `@` o
 ```{python}
 ```{.python}
   ```
-If you wish to include graphics in Pweave, just simply begin a code chunk with `<<fig=TRUE, echo=FALSE>>=`. See [here](http://mpastell.com/pweave/usage.html) for some examples. You may also use `<<fig=TRUE, echo=TRUE>>=` if you want to display the code that produces the image. To weave a markdown document, run Pweave `-f DOCTYPE`. Available formats include tex, markdown,sphinx,html etc. Check out the full list of supported output formats [here](http://mpastell.com/pweave/formats.html). For example, to process a Pweave file *intro.Pnw*, simply run *Pweave -f tex intro.Pnw* from the shell. You will then get a LaTeX file which you can then compile it to a PDF. 
+If you wish to include graphics in Pweave, just simply begin a code chunk with `<<fig=TRUE, echo=FALSE>>=`. See [here](http://mpastell.com/pweave/usage.html) for some examples. You may also use `<<fig=TRUE, echo=TRUE>>=` if you want to display the code that produces the image. To weave a markdown document, run Pweave `-f DOCTYPE`. Available formats include tex, markdown,sphinx,html etc. Check out the full list of supported output formats [here](http://mpastell.com/pweave/formats.html). For example, to process a Pweave file *intro.Pnw*, simply run *Pweave -f tex intro.Pnw* from the shell. You will then get a LaTeX file which you can then compile it to a PDF. To generate a Jupyter File, run *Pweave -f notebook intro.Pnw* from the shell instead. 
+
 
 
 
