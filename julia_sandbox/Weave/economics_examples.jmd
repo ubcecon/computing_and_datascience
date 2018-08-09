@@ -1,0 +1,77 @@
+---
+title : Economics example for Weave 
+author : Arnav Sood
+date: 8th August 2018
+---
+
+# Intro 
+
+This is a Julia Markdown file written to test the features supported by [Weave.jl](http://weavejl.mpastell.com/stable/getting_started/). 
+
+There's support for `literal code`, executed code (this should return the opposite of false: `j x = 2`), and inline ``\LaTeX``.
+
+### Equation Numbering and Referencing 
+
+We can define an anonymous set of equations as such: 
+
+```math
+\begin{align}
+a^2 + b^2 &= c^2 \\
+e^{i \pi} + 1 &= 0 \\ 
+\mathbb{E}[mr] &= 1 \\ 
+\end{align}
+```
+
+And number them manually as follows:
+
+```math
+\begin{align}
+a^2 + b^2 &= c^2 \tag{1} \label{pyth} \\
+e^{i \pi} + 1 &= 0 \tag{2} \label{euler} \\ 
+\mathbb{E}[mr] &= 1 \tag{3} \label{euler2} \\ 
+\end{align}
+```
+
+We can then do some cross-references, say to \eqref{pyth} and \eqref{euler2}. 
+
+If we have one mammoth equation, we can split it into multiple lines in an `align` environment. The `multline` environment works briefly, but then changes as some sort of styling is applied. We could probably disable this. 
+
+```math
+\begin{align*}
+p(x) = &3x^6 + 14x^5y + 590x^4y^2 + 19x^3y^3\\ 
+&- 12x^2y^4 - 12xy^5 + 2y^6 - a^3b^3
+\end{align*}
+```
+
+### Plotting 
+
+We can also try to make some plots. Here's a basic one that comes from executing a plotting command: 
+
+```julia 
+using Plots 
+gr() # Set the backend. 
+y = sin.(-pi:0.01:pi)
+p = plot(y)
+display(p)
+```
+
+We can add metadata to and change the size of this plot using Weave features: 
+
+```{julia; echo = false; fig_cap = "Sine Plot"; label = "sines"; fig_height = 2; fig_width = 4}
+plot(y)
+```
+
+We can also cross-reference to figures in ``\LaTeX`` like \ref{fig:sines}. 
+
+### Other Features
+
+We can have code run "silently," that is, without being printed (useful for setup, etc.). For example, I'll define a function below silently, and then call it later. 
+
+```{julia; echo = false}
+π(ξ) = x -> exp.(ξ * x)
+```
+
+```julia
+π(1.0) # Returns a function based on the silent definition of π.
+π(3.0) # Returns a different function. 
+```
