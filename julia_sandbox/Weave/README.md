@@ -10,6 +10,7 @@
 
 1. If you have installed Anaconda, Jupyter and nbconvert are installed, but they may not be in your path.  You can test if they are by typing `jupyter` into a console
     - If they are not, then them to the path based on your operating system.  For example, they might be in `C:\bin\Anaconda3\Scripts` if you installed Anaconda in `c:\bin`
+1. You will need to have the Pygments python library to include sourcecode in tex.  To install this, use `conda install -c anaconda pygments`
 1. If you didn't install nbconvert, then verify the installation with [nbconvert](https://nbconvert.readthedocs.io/en/latest/install.html)
     - **TODO:** It is unclear whether you need to have XeLaTeX installed just to generate a notebook
 
