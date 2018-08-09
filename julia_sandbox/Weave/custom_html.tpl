@@ -29,8 +29,8 @@
 
           <div class="title">
             {{#:title}}<h3 class="title">{{:title}}</h1>{{/:title}}
-            {{#:author}}<h8>{{{:author}}}</h5>{{/:author}}
-            {{#:date}}<h8>{{{:date}}}</h5>{{/:date}}
+            {{#:author}}<h6>{{{:author}}}</h6>{{/:author}}
+            {{#:date}}<h6>>{{{:date}}}</h6>{{/:date}}
           </div>
 
           {{{ :body }}}
