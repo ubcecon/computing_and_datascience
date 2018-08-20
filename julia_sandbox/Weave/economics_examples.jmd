@@ -16,11 +16,13 @@ We can define an anonymous set of equations as such:
 
 ```math
 \begin{align}
-a^2 + b^2 &= c^2 \\
+a^2 + b^2 &= c^2 \label{pythagorean} \\
 e^{i \pi} + 1 &= 0 \\ 
 \mathbb{E}[mr] &= 1 \\ 
 \end{align}
 ```
+
+There aren't any numbers, and referring to \eqref{pythagorean} breaks. 
 
 And number them manually as follows:
 
