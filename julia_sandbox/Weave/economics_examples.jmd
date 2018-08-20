@@ -22,7 +22,13 @@ e^{i \pi} + 1 &= 0 \\
 \end{align}
 ```
 
-There aren't any numbers, and referring to \eqref{pythagorean} breaks. 
+We can also test some unicode. For example: π = 3.1415926..., α^2 + β^2 = γ^2, μ̃ = ρ̂ + ω₃, we might call a labor supply L̄ or L̅...
+
+\begin{equation}
+1 + 2 = 3 \label{truism}
+\end{equation}
+
+There aren't any numbers, and referring to \eqref{pythagorean} or \eqref{truism} breaks. 
 
 And number them manually as follows:
 
