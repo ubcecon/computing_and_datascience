@@ -5,3 +5,8 @@ deps/deps.jl
 *.ipynb_checkpoints
 weave_sandbox/FIR_design.ipynb
 weave_sandbox/test_plotting.ipynb
+julia_sandbox/weave/economics_examples.html 
+julia_sandbox/weave/economics_examples.tex
+julia_sandbox/weave/*.aux 
+julia_sandbox/weave/*.pdf
+ 
