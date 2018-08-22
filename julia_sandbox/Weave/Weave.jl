@@ -16,7 +16,11 @@ using Weave
     Test the more specialized features that we need. 
 =#
 
-weave("economics_examples.jmd", out_path = :pwd, doctype = "md2html", template = "custom_html.tpl") # HTML output
-# weave("economics_examples.jmd", out_path = :pwd, doctype = "md2pdf") # PDF output. Currently broken.
-convert_doc("economics_examples.jmd", "economics_examples.ipynb") # Notebook output. 
-tangle("economics_examples.jmd", out_path = :pwd) # Tangled output. 
+# weave("economics_examples.jmd", out_path = :pwd, doctype = "md2html", template = "custom_html.tpl") # HTML output
+# # weave("economics_examples.jmd", out_path = :pwd, doctype = "md2pdf") # PDF output. Currently broken.
+# convert_doc("economics_examples.jmd", "economics_examples.ipynb") # Notebook output. 
+# tangle("economics_examples.jmd", out_path = :pwd) # Tangled output. 
+
+# Tests for equation numbering, etc. 
+weave("economics_examples.jmd", out_path = :pwd, doctype = "md2html")
+weave("economics_examples.jmd", out_path = :pwd, doctype = "md2tex")

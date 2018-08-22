@@ -12,43 +12,23 @@ There's support for `literal code`, executed code (this should return the opposi
 
 ### Equation Numbering and Referencing 
 
-We can define an anonymous set of equations as such: 
+We can define a set of equations as such: 
 
 ```math
-\begin{align}
 a^2 + b^2 &= c^2 \label{pythagorean} \\
-e^{i \pi} + 1 &= 0 \\ 
-\mathbb{E}[mr] &= 1 \\ 
-\end{align}
+e^{i \pi} + 1 &= 0 \label{euler1} \\ 
+\mathbb{E}[mr] &= 1 \label{euler2} \\ 
 ```
 
-We can also test some unicode. For example: π = 3.1415926..., α^2 + β^2 = γ^2, μ̃ = ρ̂ + ω₃, we might call a labor supply L̄ or L̅...
+And we can refer to things like ``\eqref{pythagorean}`` or ``\eqref{euler2}``.
 
-\begin{equation}
-1 + 2 = 3 \label{truism}
-\end{equation}
-
-There aren't any numbers, and referring to \eqref{pythagorean} or \eqref{truism} breaks. 
-
-And number them manually as follows:
-
-```math
-\begin{align}
-a^2 + b^2 &= c^2 \tag{1} \label{pyth} \\
-e^{i \pi} + 1 &= 0 \tag{2} \label{euler} \\ 
-\mathbb{E}[mr] &= 1 \tag{3} \label{euler2} \\ 
-\end{align}
-```
-
-We can then do some cross-references, say to \eqref{pyth} and \eqref{euler2}. 
+We can also test some splatted unicode. For example: π = 3.1415926..., α^2 + β^2 = γ^2, μ̃ = ρ̂ + ω₃, we might call a labor supply L̄ or L̅...
 
 If we have one mammoth equation, we can split it into multiple lines in an `align` environment. The `multline` environment works briefly, but then changes as some sort of styling is applied. We could probably disable this. 
 
 ```math
-\begin{align*}
 p(x) = &3x^6 + 14x^5y + 590x^4y^2 + 19x^3y^3\\ 
 &- 12x^2y^4 - 12xy^5 + 2y^6 - a^3b^3
-\end{align*}
 ```
 
 ### Plotting 
