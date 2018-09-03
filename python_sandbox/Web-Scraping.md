@@ -2,11 +2,11 @@
 
 Web scraping is a technique for retrieving data or information on web servers. It is most commonly achieved by writing an automated program that queries into a webpage, requests required data (usually in the form of HTML), parses those data to extract needed information and then stores the target information. Web scraping is useful since large databases can be gathered and processed quickly. Areas such as financial forecasting and natural langugage parsing have been benefited tremendously from this practice of gathering data from new webpages and translated texts quickly. Some of the languages that support web scraping include Python (Scrapy and beautifulsoup), Java (Jaunt, Jsoup) and node.js (Noodle, Osmosis). Check out [here] (https://blog.webkid.io/nodejs-scraping-libraries/)) for more information about Osmosis. We will start with the basic mechanics of web scraping by learning how to use Python libraries to extract information. 
 
-### 1. Web Scraping in Python 
+## Web Scraping in Python 
 
 Python is one of the most popular languages used for web scraping. In particular, *BeautifulSoup* and *Scrapy* are two widely used libraries in python for web crawling. 
 
-#### BeautifulSoup
+ ### 1. BeautifulSoup
 
 > *Beautiful Soup, so rich and green, \
 > Waiting in a hot tureen! \
@@ -17,7 +17,7 @@ BeautifulSoup is a highly-efficient Python library used for formating and organi
 
 However, BeautifulSoup is not a default Python library and therefore the following steps will be needed for installation. 
 
-#### Before downloading BeautifulSoup
+### Before downloading BeautifulSoup
 We will be using the **BeautifulSoup 4** library (aka BS4). The current release is [Beautiful Soup 4.6.3](https://www.crummy.com/software/BeautifulSoup/bs4/download/) (August 12, 2018). Before installing BeautifulSoup 4, please make sure you have the followings installed first: 
 * [*For absolute beginners*] Download [Python](https://www.python.org)
   
@@ -43,20 +43,31 @@ We will be using the **BeautifulSoup 4** library (aka BS4). The current release 
   Please check out its [user guide](https://virtualenv.pypa.io/en/stable/userguide/) for more information on how to use a virtual environment.
  * [*Optional*] Install text editors. [Atom](https://github.com/econtoolkit/tutorials/blob/master/atom.md) and [VS Code](https://github.com/econtoolkit/tutorials/blob/master/vscode.md) are popular. 
  
- #### Installing BeautifulSoup 
+ ### Installing BeautifulSoup 
    Check out [here](https://www.crummy.com/software/BeautifulSoup/bs4/doc/) for complete instructions for installing BeautifulSoup 4. You may also follow the steps below for basic setup: 
    - For *Linux* users: 
    ```
   $ sudo apt-get install python-bs4
   ```
-  - For *Mac* users, first install the pYthon package manager *pip*:
+  - For *Mac* users, first install the Python package manager *pip*:
   ```
   $ sudo easy_install pip
   ```
-  Now, run this comamnd to install the library: 
+   Now, run this comamnd to install the library: 
+    
    ```
-  $ pip install beautifulsoup4
+   $ pip install beautifulsoup4
+   ```
+  - For *Windows* users, first download BeautifulSoup 4 from [here](https://www.crummy.com/software/BeautifulSoup/#Download). Then, check the directory you unzipped the downloaded files to and run: 
+  
   ```
+   > python setup.py install
+   ```
+   
+   ## Example: 
+   
+   Now, let's create a file named `myScript.py` in any Python text editors you prefer. Consider
+  
   
  
 
