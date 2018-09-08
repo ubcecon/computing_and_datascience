@@ -6,4 +6,7 @@
     
 ## To build the docker image locally
     docker build -t <your_username>/<docker_image_name_you_want_to_call_it> -f <Dockerfile_name> .
+### If you want to have them commited to your docker hub
+    docker login
+    docker push <your_username>/<docker_image_name_you_want_to_call_it>
     
