@@ -54,6 +54,8 @@ https://github.com/dformoso/docker-atom-tutorial
     docker push <your_username>/<docker_image_name_you_want_to_call_it>
 ## How to use the two test images(which you can change the preinstalled libraries) 
 ### I use this command to build the julia test image, you can modify the docker file used to add more packages and precompile
-    docker build -t jasminefish000/julia_test -f Dockerfile_Juliav1.0 .
-### Use this command to build Jupyter+Juliav1.0+GR image, the docker image size after building is 1.59G 
-    docker build -t jasminefish000/jupyter_test -f Dockerfile_Juliav1.0 .
+    `docker build -t jasminefish000/julia_test -f Dockerfile_Juliav1.0 .`
+    The image size is 625MB
+### Use this command to build Jupyter+Juliav1.0+GR image
+    `docker build -t jasminefish000/jupyter_test -f Dockerfile_Julia_Jupyter_1.0 .`
+the docker image size after building is 1.59G 
