@@ -5,8 +5,4 @@ ENV JULIA_PKGDIR=/opt/julia
 # Add packages
 USER $NB_USER
 # Julia packages
-RUN julia -e 'using Pkg; pkg"add QuantEcon; precompile"' && \
-    # move kernelspec out of home \
-    mv $HOME/.local/share/jupyter/kernels/julia* $CONDA_DIR/share/jupyter/kernels/ && \
-    chmod -R go+rx $CONDA_DIR/share/jupyter && \
-    rm -rf $HOME/.local
+RUN julia -e 'using Pkg; pkg"add QuantEcon; precompile"' 
