@@ -35,18 +35,24 @@ On a windows system, this works for me ` run -p 8888:8888 -v C:\Users\Jasmine:/h
 One thing to notice: `docker run` is the command one uses when first initiate the docker container.
 If you shutdown the docker container, it went dormant. But everything installed remains in the container. To start the container again, use `docker start -a <container_id>`.
 
+## Usefule links for beginner guide
+ - Docker for beginner
+https://github.com/docker/labs/tree/master/beginner/
+ - A introduction of how to run docker with atom
+https://github.com/dformoso/docker-atom-tutorial
 
 # Example docker images and stacks
 - Help for the Jupyter Stacks: http://jupyter-docker-stacks.readthedocs.io/en/latest/index.html
     - Jupyter/Python/etc:  https://github.com/jupyter/docker-stacks/tree/master/datascience-notebook
     
 # How to build your customizable docker image
+## Basic commands
 ### Command to build docker image locally
     docker build -t <your_username>/<docker_image_name_you_want_to_call_it> -f <Dockerfile_name> .
 ### If you want to have them commited to your docker hub
     docker login
     docker push <your_username>/<docker_image_name_you_want_to_call_it>
-    
+## How to use the two test images(which you can change the preinstalled libraries) 
 ### I use this command to build the julia test image, you can modify the docker file used to add more packages and precompile
     docker build -t jasminefish000/julia_test -f Dockerfile_Juliav1.0 .
 ### Use this command to build Jupyter+Juliav1.0+GR image, the docker image size after building is 1.59G 
