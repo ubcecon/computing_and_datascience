@@ -6,7 +6,7 @@
 
 1. Install [Docker](https://docs.docker.com/install/), should expect to see an executable file
     - Link [for Mac](https://store.docker.com/editions/community/docker-ce-desktop-mac)
-    - For [for Windows](https://store.docker.com/editions/community/docker-ce-desktop-windows). 
+    - For [Windows](https://store.docker.com/editions/community/docker-ce-desktop-windows). Don't click the line for Windows containers. 
     - Note: You may need to create an account on Docker's website to download 
 
 2. Test your Docker setup
