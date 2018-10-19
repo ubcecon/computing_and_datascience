@@ -1,61 +1,59 @@
-# Placeholder for notes on Docker
+# Docker Instructions
 
-# How to get docker running on your laptop
- Step by step to run docker:
+> Note: The way Docker works is that a static `Dockerfile`, containing setup instructions, is compiled into a read-only object called a `Docker image`. This image is then turned into an interactive environment called a `Docker container` when you work with Docker. As a rule, these containers are freshly generated when you use them --- persistent storage is not the goal, and it's not difficult to lose your work. 
 
-1. Install Docker see https://docs.docker.com/install/, should expect to see an executable file.
-For Mac, https://store.docker.com/editions/community/docker-ce-desktop-mac
-For Windows, https://store.docker.com/editions/community/docker-ce-desktop-windows
+## Quick Start Guide
 
-2. Test run: to test run Docker, run `docker version`, and `docker run hello-world`. This provides you with a test-run of a docker, and give the information whether docker is installed correctly.
-To see installed docker container `docker container ls`.
+1. Install [Docker](https://docs.docker.com/install/), should expect to see an executable file
+    - Link [for Mac](https://store.docker.com/editions/community/docker-ce-desktop-mac)
+    - For [for Windows](https://store.docker.com/editions/community/docker-ce-desktop-windows). 
+    - Note: You may need to create an account on Docker's website to download 
 
-3. After installing docker, one experiment run `docker run -p 8888:8888 jupyter/datascience-notebook`. This notebook contains scientific computing tools from Python,Julia and R.
-It automatically downloads the container and starts for the first time. Press  `control+c` to shut down the server. 
-To view the existing containers, use the command `docker ps -a` in the command line.
-To view running containers, use `docker container ls`.
-To kill container, use `docker kill <container_name>`.
-To start a exisitng container, user ` docker start -a <container_id>`, the container id is something like ` 6bae11aca990`.
+2. Test your Docker setup
+    - Can run either `docker version` or `docker run hello-world` in your terminal. 
 
-4. When starting the docker using step 3, the terminal print a url and ask you to paste it to your favorate browser. I received something like  `http://(1669f396172a or 127.0.0.1):8888/?token=e8b4ab83d23b8befe152936868bb79402ffdbfd9663615d4`.
-*Note: In order to run the Jupyter notebook, need to change the url into `http://127.0.0.1:8888/?token=e8b4ab83d23b8befe152936868bb79402ffdbfd9663615d4`.
+3. Download our interactive Dockerfile at https://raw.githubusercontent.com/ubcecon/computing_and_datascience/master/docker/interactive/Dockerfile
 
-5. After step 4, should see a jupyter notebook opened in the preferred browser.  From here, to open jupyter notebook, click new - > julia. To open julia REPL, click new -> terminal, then type `julia`.
-The version used in the current container is v0.6.2.
+4. In the same directory, turn that Dockerfile into an image with `docker build -t qe-julia:interactive .`. Go get coffee.
 
-6. Install an experimental package in the REPL using `Pkg.add("QuantEcon")`.  Experiment if it is still there after I close it and open it again.
-Shut down the kernel by using `Control+c` and then restart it by using `docker start -a <container_id>`. 
-The installed package `QuantEcon` can still be used.
+5. Once that's done, you can use a fresh container by running `docker run -p 8888:8888 qe-julia:interactive` in your terminal. This will give you some output like: 
 
-7. To mount the local directory, use the `-v` argument with `docker run`.
-it must be done when first run the container. There are some potential issues. See https://github.com/jupyter/docker-stacks/issues/199.
-One command I found useful is `docker run  -p 8888:8888 -v "$PWD":/home/jovyan/work jupyter/datascience-notebook`.
+    ```
+    127.0.0.1):8888/?token=7c8f37bf32b1d7f0b633596204ee7361c1213926a6f0a44b
+    ```
 
-On a windows system, this works for me ` run -p 8888:8888 -v C:\Users\Jasmine:/home/jovyan/work jupyter/datascience-notebook`.
-One thing to notice: `docker run` is the command one uses when first initiate the docker container.
-If you shutdown the docker container, it went dormant. But everything installed remains in the container. To start the container again, use `docker start -a <container_id>`.
+    Remove the `)` before `8888` and paste this into your browser to access the Docker environment. 
 
-## Usefule links for beginner guide
- - Docker for beginner
-https://github.com/docker/labs/tree/master/beginner/
- - A introduction of how to run docker with atom
-https://github.com/dformoso/docker-atom-tutorial
+5. After step 4, should see a jupyter notebook opened in the preferred browser.  From here, you can open either a new Jupyter notebook (`New => Julia`) or terminal (`New => Terminal`).
 
-# Example docker images and stacks
-- Help for the Jupyter Stacks: http://jupyter-docker-stacks.readthedocs.io/en/latest/index.html
-    - Jupyter/Python/etc:  https://github.com/jupyter/docker-stacks/tree/master/datascience-notebook
-    
-# How to build your customizable docker image
-## Basic commands
-### Command to build docker image locally
-    docker build -t <your_username>/<docker_image_name_you_want_to_call_it> -f <Dockerfile_name> .
-### If you want to have them commited to your docker hub
-    docker login
-    docker push <your_username>/<docker_image_name_you_want_to_call_it>
-## How to use the two test images(which you can change the preinstalled libraries) 
-### I use this command to build the julia test image, you can modify the docker file used to add more packages and precompile
-    docker build -t jasminefish000/julia_test -f Dockerfile_Juliav1.0 .
-  The image size is 625MB
-### Use this command to build Jupyter+Juliav1.0+GR image
-    docker build -t jasminefish000/jupyter_test -f Dockerfile_Julia_Jupyter_1.0 .
-the docker image size after building is 1.59G 
+6. To shut down, hit `Control+C`. 
+
+7. To restart that exact image, see the instructions below. 
+
+## Local Files, Persistent Storage, Etc.  
+
+A common use case is to let your Docker container exchange files with a local directory (say, a set of notebooks). For ways to do this, see: 
+
+* Mounting to a Local Directory: This will start your Docker container with full read/write access to files in a local directory. The way to do this is to navigate to a directory in your terminal, and run: 
+
+```
+docker run -p 8888:8888 -v "$PWD":/home/jovyan qe-julia:interactive
+docker run -p 8888:8888 -v C:\Users\Arnav:/home/jovyan/work jupyter/datascience-notebook (Windows)
+```
+
+* Saving Machine State: Sometimes, you'll have done a lot of work in a given container (installing packages, files, etc.), and you would prefer to simply "shut down" the container and "restart" it later. 
+
+   To do this, take note of the container ID generated by docker before you exit. You can find the container IDs for active containers by running `docker ps` in the terminal. Then, after you quit, run `docker start -a CONTAINERID` to restart in the state you saved. 
+
+   :warning: Quitting a Docker container is like hard-rebooting a PC. Things you saved will stick around, but things you were working on without saving will be lost. Also, since the Docker community acts as if containers are kept running while they're needed and quit otherwise, it's always possible that they'll adopt automatic garbage-collection. Bottom line, save valuable files explicitly.
+
+* Docker Garbage Collection: If you want to delete old containers, images, etc., run `docker system prune`.
+
+# Docker Resources 
+
+The beauty of Docker is that it eliminates the frictions required to test new technologies (for example, our `qe-julia:interactive` image is based on [jupyter/datascience-notebook](https://hub.docker.com/r/jupyter/datascience-notebook/)). Consider exploring [Dockerhub](https://hub.docker.com). 
+
+See Also: 
+
+    * [Docker for Beginners](https://github.com/docker/labs/tree/master/beginner)
+    * [Docker + Atom](https://github.com/dformoso/docker-atom-tutorial)
