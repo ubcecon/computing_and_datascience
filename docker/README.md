@@ -26,7 +26,7 @@
 
 5. After step 4, should see a jupyter notebook opened in the preferred browser.  From here, you can open either a new Jupyter notebook (`New => Julia`) or terminal (`New => Terminal`).
 
-6. To shut down, hit `Control+C`. 
+6. To shut down, run `docker stop $(docker ps -aq)` or hit `Control+C` if your terminal is occupied. 
 
 7. To restart that exact image, see the instructions below. 
 
