@@ -11,4 +11,4 @@ RUN wget --quiet https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86
 # Jupinx layer. 
 RUN /bin/bash -c "source ~/.bashrc; pip install sphinxcontrib-bibtex; git clone https://github.com/QuantEcon/sphinxcontrib-jupyter; cd sphinxcontrib-jupyter; python setup.py install"
 # Julia layer  
-RUN julia -e "using Pkg; pkg\"add Expectations Compat IJulia Revise QuantEcon InstantiateFromURL Plots GR Parameters Distributions DifferentialEquations DiffEqBase\"; pkg\"build\"; pkg\"precompile\"" 
+RUN julia -e "using Pkg; pkg\"add Expectations Compat IJulia Interpolations Revise QuantEcon InstantiateFromURL Plots GR Parameters Distributions DifferentialEquations DiffEqBase\"; pkg\"build\"; pkg\"precompile\"" 
