@@ -2,24 +2,10 @@
 # Distributed under the terms of the Modified BSD License.
 # Modified for use by https://github.com/ubcecon
 
-FROM jupyter/scipy-notebook
-
+FROM jupyter/minimal-notebook
 LABEL maintainer="UBC Economics <https://github.com/ubcecon>"
-
-# Set when building on Travis so that certain long-running build steps can
-# be skipped to shorten build time.
-ARG TEST_ONLY_BUILD
-
 USER root
-
-# R pre-requisites
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-    fonts-dejavu \
-    tzdata \
-    gfortran \
-    gcc && apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+RUN apt-get update 
 
 # Julia dependencies
 # install Julia packages in /opt/julia instead of $HOME
@@ -43,40 +29,9 @@ RUN mkdir /etc/julia && \
 
 USER $NB_UID
 
-# R packages including IRKernel which gets installed globally.
-RUN conda install --quiet --yes \
-    'rpy2=2.8*' \
-    'r-base=3.4.1' \
-    'r-irkernel=0.8*' \
-    'r-plyr=1.8*' \
-    'r-devtools=1.13*' \
-    'r-tidyverse=1.1*' \
-    'r-shiny=1.0*' \
-    'r-rmarkdown=1.8*' \
-    'r-forecast=8.2*' \
-    'r-rsqlite=2.0*' \
-    'r-reshape2=1.4*' \
-    'r-nycflights13=0.2*' \
-    'r-caret=6.0*' \
-    'r-rcurl=1.95*' \
-    'r-crayon=1.3*' \
-    'r-randomforest=4.6*' \
-    'r-htmltools=0.3*' \
-    'r-sparklyr=0.7*' \
-    'r-htmlwidgets=1.0*' \
-    'r-hexbin=1.27*' && \
-    conda clean -tipsy && \
-    fix-permissions $CONDA_DIR && \
-    fix-permissions /home/$NB_USER
-
-# Add Julia packages. Only add HDF5 if this is not a test-only build since
-# it takes roughly half the entire build time of all of the images on Travis
-# to add this one package and often causes Travis to timeout.
-#
-# Install IJulia as jovyan and then move the kernelspec out
-# to the system share location. Avoids problems with runtime UID change not
-# taking effect properly on the .local folder in the jovyan home dir.
-RUN julia -e "using Pkg; pkg\"add Expectations Compat IJulia Interpolations Revise QuantEcon InstantiateFromURL Plots GR Parameters Distributions DifferentialEquations DiffEqBase\"; pkg\"build\"; pkg\"precompile\"" 
+# Julia layer 
+RUN julia -e "using Pkg; pkg\"add Expectations Compat IJulia Interpolations Revise QuantEcon InstantiateFromURL Plots GR Parameters Distributions\"; pkg\"build\"; pkg\"precompile\"" 
+RUN julia -e "using InstantiateFromURL; activate_github(\"QuantEcon/QuantEconLecturePackages\", tag = \"v0.3.1\")"
 
 # Jupyter kernelspec stuff 
 RUN mv $HOME/.local/share/jupyter/kernels/julia* $CONDA_DIR/share/jupyter/kernels/ && \
