@@ -1,3 +1,16 @@
+This example uses preliminary R packages without advanced function. The main goal is to parse an html web page and extract tables from the web page. \#\# Preload packages This script requires httr, XML, stringr. We are using GET function from httr httr: <https://cran.r-project.org/web/packages/httr/httr.pdf>
+
+For parsing the XML, we use the htmlParse,readHTMLTable from XML <https://cran.r-project.org/web/packages/XML/XML.pdf>
+
+The stringr package is used for parsing the strings. <http://edrub.in/CheatSheets/cheatSheetStringr.pdf>
+
+dplyr cheat sheet: <https://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf>
+
+Realtime data collecting
+------------------------
+
+This section collect realtime data from yahoo finance currency page. Other pages are also available for data collect. Examples are listed below.
+
 ``` r
 url_crypto <-"https://ca.finance.yahoo.com/cryptocurrencies"
 url_commo <- "https://ca.finance.yahoo.com/commodities"
@@ -24,45 +37,45 @@ print(head(currency_price))
 ```
 
     ##   CAD/USD  CAD/EUR  CAD/GBP  CAD/CNY  EUR/USD  USD/JPY  GBP/USD  USD/CHF
-    ## 1    0.76     0.67   0.5802   5.2531   1.1305  113.873  1.30130  1.00642
-    ## 2    0.76     0.67   0.5802   5.2531   1.1305  113.873  1.30130  1.00642
-    ## 3    0.76     0.67   0.5802   5.2531   1.1305  113.878  1.30134  1.00646
-    ## 4    0.76     0.67   0.5802   5.2531   1.1305  113.879  1.30134  1.00646
-    ## 5    0.76     0.67   0.5802   5.2531   1.1305  113.872  1.30134  1.00646
-    ## 6    0.76     0.67   0.5802   5.2531   1.1305  113.879  1.30134  1.00646
+    ## 1    0.76     0.67   0.5807   5.2488   1.1321  113.590  1.29970  1.00606
+    ## 2    0.76     0.67   0.5807   5.2488   1.1321  113.590  1.29970  1.00606
+    ## 3    0.76     0.67   0.5807   5.2488   1.1321  113.592  1.29970  1.00607
+    ## 4    0.76     0.67   0.5807   5.2488   1.1322  113.592  1.29976  1.00600
+    ## 5    0.76     0.67   0.5807   5.2488   1.1322  113.593  1.29976  1.00607
+    ## 6    0.76     0.67   0.5807   5.2488   1.1322  113.592  1.29976  1.00607
     ##    AUD/USD  AUD/JPY  NZD/USD  EUR/JPY  GBP/JPY  EUR/GBP  EUR/SEK  EUR/CHF
-    ## 1   0.7219   82.193   0.6773  128.688  148.161  0.86843 10.22370  1.13737
-    ## 2   0.7219   82.193   0.6773  128.688  148.161  0.86843 10.22370  1.13737
-    ## 3   0.7219   82.189   0.6773  128.705  148.180  0.86851 10.22354  1.13747
-    ## 4   0.7219   82.194   0.6773  128.704  148.178  0.86850 10.22356  1.13747
-    ## 5   0.7219   82.192   0.6773  128.703  148.178  0.86850 10.22342  1.13747
-    ## 6   0.7219   82.197   0.6773  128.703  148.173  0.86852 10.22342  1.13747
+    ## 1   0.7237   82.187   0.6795  128.566  147.646  0.87080 10.27357  1.13862
+    ## 2   0.7237   82.187   0.6795  128.566  147.646  0.87080 10.27357  1.13862
+    ## 3   0.7237   82.204   0.6795  128.571  147.639  0.87079 10.27390  1.13855
+    ## 4   0.7237   82.208   0.6795  128.565  147.639  0.87079 10.27370  1.13856
+    ## 5   0.7237   82.201   0.6795  128.568  147.640  0.87079 10.27370  1.13871
+    ## 6   0.7237   82.202   0.6795  128.571  147.640  0.87077 10.27400  1.13870
     ##    EUR/HUF  EUR/JPY  USD/CNY  USD/HKD  USD/SGD  USD/INR  USD/MXN  USD/PHP
-    ## 1   322.90  128.688   6.9518  7.83278  1.37997     72.3  20.4940    53.05
-    ## 2   322.90  128.688   6.9518  7.83278  1.37997     72.3  20.4940    53.05
-    ## 3   322.90  128.705   6.9519  7.83278  1.38022     72.3  20.4940    53.05
-    ## 4   322.90  128.704   6.9519  7.83278  1.37998     72.3  20.4940    53.05
-    ## 5   322.88  128.703   6.9519  7.83278  1.38020     72.3  20.4889    53.05
-    ## 6   322.88  128.703   6.9519  7.83278  1.38020     72.3  20.4940    53.05
+    ## 1   322.30  128.566   6.9499   7.8307  1.37865   72.304  20.3998    53.08
+    ## 2   322.30  128.566   6.9499   7.8307  1.37865   72.304  20.3998    53.08
+    ## 3   322.33  128.571   6.9499   7.8307  1.37865   72.304  20.3997    53.08
+    ## 4   322.32  128.565   6.9499   7.8308  1.37865   72.304  20.3997    53.08
+    ## 5   322.33  128.568   6.9499   7.8308  1.37865   72.304  20.3997    53.08
+    ## 6   322.38  128.571   6.9499   7.8308  1.37870   72.304  20.3997    53.08
     ##    USD/IDR  USD/THB  USD/MYR  USD/ZAR                time
-    ## 1       14      768   32.922     4.19 2018-11-13 18:42:58
-    ## 2       14      768   32.922     4.19 2018-11-13 18:43:04
-    ## 3       14      768   32.922     4.19 2018-11-13 18:43:10
-    ## 4       14      768   32.922     4.19 2018-11-13 18:43:15
-    ## 5       14      768   32.922     4.19 2018-11-13 18:43:21
-    ## 6       14      768   32.922     4.19 2018-11-13 18:43:27
+    ## 1       14      785   32.917   4.1945 2018-11-14 15:28:54
+    ## 2       14      785   32.917   4.1945 2018-11-14 15:28:59
+    ## 3       14      785   32.917   4.1945 2018-11-14 15:29:05
+    ## 4       14      785   32.917   4.1945 2018-11-14 15:29:10
+    ## 5       14      785   32.917   4.1945 2018-11-14 15:29:16
+    ## 6       14      785   32.943   4.1945 2018-11-14 15:29:22
+
+Plot the Data from the last 10 seconds
+--------------------------------------
+
+Reshape <https://www.statmethods.net/management/reshape.html>
+
+GGplot2 cheat sheet: <https://www.rstudio.com/wp-content/uploads/2015/03/ggplot2-cheatsheet.pdf>
 
 ``` r
 library(ggplot2)
-```
-
-    ## Warning: package 'ggplot2' was built under R version 3.5.1
-
-``` r
 library(reshape)
 ```
-
-    ## Warning: package 'reshape' was built under R version 3.5.1
 
     ## 
     ## Attaching package: 'reshape'
@@ -73,10 +86,15 @@ library(reshape)
 
 ``` r
 price_plot <- melt(currency_price,"time")
-ggplot2::ggplot(price_plot,aes(x = time, y = value, 
-                                  group = variable, color = variable)) + geom_line(size = 1.2, alpha = 0.5) 
+ggplot2::ggplot(price_plot,aes(x = time, 
+                               y = value, 
+                                  group = variable, color = variable)) + 
+                                geom_line(size = 1.2, alpha = 0.5)   
 ```
 
-![](Yahoo_realtime_files/figure-markdown_github/unnamed-chunk-1-1.png)
+![](Yahoo-realtime_files/figure-markdown_github/unnamed-chunk-1-1.png)
+
+Real time
+---------
 
 ![](Yahoo_realtime_files/figure-markdown_github/GBP_USD.png) ![](Yahoo_realtime_files/figure-markdown_github/GBP_JPY.png)
