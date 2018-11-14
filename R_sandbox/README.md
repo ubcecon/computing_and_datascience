@@ -11,5 +11,6 @@ Would be neat to redo a little of this
 
 ## R tutorials
 - [Yahoo Finance](yahoo-finance.md) by @jasminehao
+- [Yahoo Realtime](yahoo-realtime.md) by @jasminehao
 - [AER abstracts](aer-articles.md) by @chiyahn
 - [Firm locations using SEC website](sec-location.md) by @chiyahn and @jasminehao
