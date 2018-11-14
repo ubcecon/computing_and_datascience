@@ -22,7 +22,7 @@ http://edrub.in/CheatSheets/cheatSheetStringr.pdf
 dplyr cheat sheet:
 https://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf
 
-```{r setup, include=FALSE}
+```{r setup, warning=FALSE}
 for (pkg in c("rvest","httr","dplyr","stringr","XML","RCurl","ggplot2","reshape")){
  if (!pkg %in% rownames(installed.packages())){install.packages(pkg)}
 }
@@ -44,17 +44,16 @@ i = 0
 currency_price <- data.frame()
 time_list <- c()
 while (i < 10){
-  web_page_parsed <- htmlParse(GET(url_curr), encoding = "UTF-8")
-  table <- readHTMLTable(web_page_parsed)
-  table <- table[[1]][,1:3]
-  names(table) <- c("Symb","Name","price")
-  price_list <-as.numeric(strsplit(toString(table$price),",")[[1]])[1:28]
-  name_list <- strsplit(toString(table$Name),",")[[1]][1:28]
-  # names(price_list) <- name_list
-  currency_price <- rbind(currency_price,price_list)
-  colnames(currency_price) <- name_list
-  time_list <- c(time_list,toString(Sys.time()))
-  Sys.sleep(5)
+  web_page_parsed <- htmlParse(GET(url_curr), encoding = "UTF-8") #Parse the HTML
+  table <- readHTMLTable(web_page_parsed) #Extract table from HTML
+  table <- table[[1]][,1:3] #Only keep the 3rd table, digit part
+  names(table) <- c("Symb","Name","price") #Change dataframe name for easy merge
+  price_list <-as.numeric(strsplit(toString(table$price),",")[[1]])[1:28] #Process the data type, for all 28 FX price
+  name_list <- strsplit(toString(table$Name),",")[[1]][1:28] #Get the name of the FX
+  currency_price <- rbind(currency_price,price_list) #Merge the fetched data into the metadata
+  colnames(currency_price) <- name_list #Rename the columns of the metadata
+  time_list <- c(time_list,toString(Sys.time())) #Append the time to time_list
+  Sys.sleep(5) #Sleep for 5 secs
   i = i + 1
 }
 currency_price$time <- time_list
@@ -68,7 +67,7 @@ https://www.statmethods.net/management/reshape.html
 GGplot2 cheat sheet:
 https://www.rstudio.com/wp-content/uploads/2015/03/ggplot2-cheatsheet.pdf
 
-```{r}
+```{r, warning=FALSE}
 library(ggplot2)
 library(reshape)
 price_plot <- melt(currency_price,"time")
@@ -78,6 +77,8 @@ ggplot2::ggplot(price_plot,aes(x = time,
                                 geom_line(size = 1.2, alpha = 0.5)   
 ```
 
-## Real time 
+## Real time example
+These two examples use the same script. Instead we setting the Sys.sleep() to 60 seconds and collect 100 data points. 
+
 ![](Yahoo_realtime_files/figure-markdown_github/GBP_USD.png)
 ![](Yahoo_realtime_files/figure-markdown_github/GBP_JPY.png)
