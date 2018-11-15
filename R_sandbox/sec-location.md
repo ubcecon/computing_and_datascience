@@ -1,3 +1,76 @@
+SEC firm locations
+==================
+
+This is an example of scraping location information of firms. The firms uses rvest, for scraping data of a HTML page given the node number.
+
+The doccumentation of R vest file: [Rvest Documentation](https://cran.r-project.org/web/packages/rvest/rvest.pdf)
+
+The ggmap is used for extracting the longitude and latitude information given a string containing the address.
+
+The documentation of ggmap: [ggmap Documentation](https://cran.r-project.org/web/packages/ggmap/ggmap.pdf)
+
+Other than that, the natural language processing is done using tm and stringr.
+
+``` r
+for (pkg in c("rvest","httr","dplyr","stringr","XML","RCurl","ggplot2","reshape","tm","ggmap")){
+ if (!pkg %in% rownames(installed.packages())){install.packages(pkg)}
+}
+library(rvest)
+```
+
+    ## Loading required package: xml2
+
+``` r
+library(dplyr)
+```
+
+    ## 
+    ## Attaching package: 'dplyr'
+
+    ## The following objects are masked from 'package:stats':
+    ## 
+    ##     filter, lag
+
+    ## The following objects are masked from 'package:base':
+    ## 
+    ##     intersect, setdiff, setequal, union
+
+``` r
+library(stringr)
+library(ggmap)
+```
+
+    ## Loading required package: ggplot2
+
+``` r
+library(XML)
+```
+
+    ## 
+    ## Attaching package: 'XML'
+
+    ## The following object is masked from 'package:rvest':
+    ## 
+    ##     xml
+
+``` r
+library(httr)
+library(tm)
+```
+
+    ## Loading required package: NLP
+
+    ## 
+    ## Attaching package: 'NLP'
+
+    ## The following object is masked from 'package:httr':
+    ## 
+    ##     content
+
+    ## The following object is masked from 'package:ggplot2':
+    ## 
+    ##     annotate
+
 Getting firm addresses from SEC website
 ---------------------------------------
 
@@ -300,11 +373,6 @@ Plot:
 
 ``` r
 USA.MAP <- map_data("state") # load USA map from ggmap
-```
-
-    ## Warning: package 'maps' was built under R version 3.5.1
-
-``` r
 ggplot(location.df, aes(x=lon, y=lat, color=SIC)) + 
   borders("world", colour="gray50", fill="white") +
   # geom_map(data=USA.MAP, map=USA.MAP, # draw borders based on USA.MAP

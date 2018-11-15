@@ -7,15 +7,25 @@ output:
   md_document:
     variant: markdown_github
 ---
+# SEC firm locations
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-# install.packages("rvest") # uncomment and run this line if rvest is not installed
-# install.packages("dplyr") # uncomment and run this line if dplyr is not installed
-# install.packages("stringr") # uncomment and run this line if stringr is not installed
-# install.packages("ggmap") # uncomment and run this line if ggmap is not installed
-# install.packages("XML") # uncomment and run this line if XML is not installed
-# install.packages("httr") # uncomment and run this line if XML is not installed
+This is an example of scraping location information of firms.
+The firms uses rvest, for scraping data of a HTML page given the node number.
+
+The doccumentation of R vest file: 
+[Rvest Documentation](https://cran.r-project.org/web/packages/rvest/rvest.pdf)
+
+
+The ggmap is used for extracting the longitude and latitude information given a string containing the address.
+
+The documentation of ggmap: [ggmap Documentation](https://cran.r-project.org/web/packages/ggmap/ggmap.pdf)
+
+Other than that, the natural language processing is done using tm and stringr.
+
+```{r setup, include=TRUE,warning=FALSE}
+for (pkg in c("rvest","httr","dplyr","stringr","XML","RCurl","ggplot2","reshape","tm","ggmap")){
+ if (!pkg %in% rownames(installed.packages())){install.packages(pkg)}
+}
 library(rvest)
 library(dplyr)
 library(stringr)
