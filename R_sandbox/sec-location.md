@@ -27,13 +27,23 @@ library(tm)
 Getting firm addresses from SEC website
 ---------------------------------------
 
-The SIC code for industries are available for lookup: [SIC](https://www.sec.gov/info/edgar/siccodes.htm) Could be intersting industries: 6500: REAL ESTATE 6798: Real Estate Investment Trusts 7371: Computer Programming Services
+The SIC code for industries are available for lookup: [SIC](https://www.sec.gov/info/edgar/siccodes.htm)
 
-We analyze the following industries: 1400: MINING & QUARRYING OF NONMETALLIC MINERALS (NO FUELS) 5734: RETAIL-COMPUTER & COMPUTER SOFTWARE STORES
+Could be intersting industries:
+
+-   6500: REAL ESTATE
+
+-   6798: Real Estate Investment Trusts
+
+-   7371: Computer Programming Services
+
+We analyze the following industries:
+
+-   1400: MINING & QUARRYING OF NONMETALLIC MINERALS (NO FUELS)
+
+-   5734: RETAIL-COMPUTER & COMPUTER SOFTWARE STORES
 
 ``` r
-# SIC.CODES <- c(6798, 7371)
-# SIC.NAMES <- c("SIC 6798: Real Estate Investment Trusts","SIC 7371: Computer Programming Services")
 SIC.CODES <- c(1400, 5734)
 SIC.NAMES <- c("SIC 1400:Mining ","SIC 5734:Retail computer")
 ```
@@ -45,38 +55,43 @@ MAX.PAGE <- 1 # maximum number of pages to be read (each page contains 100 firms
 
 ConstructFirmDF <- function(sic) {
   i <- 0
-  continue_indic = TRUE
+  continue_indic = TRUE #always continue to search
   firm.df <- data.frame(firm_code=character(),compnay=character(),state=character())
-  
+  # Create an empty data frame to store information, The data frame contains three columns:
+    # firm_code: stores the CIK
+    # company  : company name
+    # state    : the state of operation
   while (continue_indic){
     search_url <- paste('https://www.sec.gov/cgi-bin/browse-edgar?',
                       'action=getcompany&SIC=',sic,
                       '&owner=exclude&match=&start=',i*100,'&count=100&hidefilings=0',
-                      sep="")
+                      sep="") #paste the sic code(for industry) into the search engine
   
-    search_info <- GET(search_url)
-    parsed_search <- htmlParse(search_info)
-    info <- try( data.frame(readHTMLTable(parsed_search)),TRUE)
-    
-    i <- i+1
+    search_info <- GET(search_url) #fetch the html file
+    parsed_search <- htmlParse(search_info) #use html Parser
+    info <- try( data.frame(readHTMLTable(parsed_search)),TRUE) 
+    # If the page has an empty table, it means we reach the end of the search
+    # The info will contain a string fetched from the HTML file
+    i <- i+1 #Search for next 100 records
     if (typeof(info) != "list"|| (i > MAX.PAGE) ) {
-      break
+      break #If the info returns text, stop searching
     }
-    names(info) <- c("firm_code","company","state")
-    firm.df <- rbind(firm.df,info)
+    names(info) <- c("firm_code","company","state") #Rename the list to match the column names
+    firm.df <- rbind(firm.df,info) #Merge the search results with the large data frame
   }
   
   return (firm.df)
-}
+}#End of ConstructFirmDF
 
-firm.df.1 <- ConstructFirmDF(SIC.CODES[1])
+
+firm.df.1 <- ConstructFirmDF(SIC.CODES[1]) #Search for 100 records for firm 1
 ```
 
     ## No encoding supplied: defaulting to UTF-8.
     ## No encoding supplied: defaulting to UTF-8.
 
 ``` r
-firm.df.2 <- ConstructFirmDF(SIC.CODES[2])
+firm.df.2 <- ConstructFirmDF(SIC.CODES[2]) #Searcg for 100 records for firm 2
 ```
 
     ## No encoding supplied: defaulting to UTF-8.
@@ -175,8 +190,8 @@ GetGeocode <- function (address) {
 For instance, the geocode of company `BOREALIS TECHNOLOGY CORP` from `https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001014767&owner=include&count=40&hidefilings=0` can be found by passing their business address:
 
 ``` r
-address <- "4070 SILVER SAGE DR\nSTE 211\nCARSON CITY NV 89701"
-GetGeocode(address)
+address <- "4070 SILVER SAGE DR\nSTE 211\nCARSON CITY NV 89701" #Demo address
+GetGeocode(address) #The geo location info from the demo address
 ```
 
     ## Information from URL : http://www.datasciencetoolkit.org/maps/api/geocode/json?address=4070%20SILVER%20SAGE%20DR%0ASTE%20211%0ACARSON%20CITY%20NV%2089701&sensor=false
@@ -191,7 +206,7 @@ where `lon` and `lat` indicate its longitude and latitude respectively.
 Getting multiple locations can be done by using `lapply` function:
 
 ``` r
-firm.df.1.locations <- lapply(firm.df.1$address, GetGeocode)
+firm.df.1.locations <- lapply(firm.df.1$address, GetGeocode) #Get all the longtitude and latitude 
 ```
 
     ## Warning: geocode failed with status ZERO_RESULTS, location = "675 WEST HASTING STE 200
