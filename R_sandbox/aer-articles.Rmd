@@ -22,13 +22,9 @@ library(stringi)
 
 Learning goals:
 
-- understand basics of HTML and analyze websites
-
-- exploit HTML structures to grab data
-
-- extract abstracts of journal articles from AER
-
-- extract authors of journal articles from AER
+* understand basics of HTML and analyze websites
+* exploit HTML structures to grab data
+* extract abstracts of journal articles from AER
 
 A website for an article usually looks like this:
 
@@ -197,11 +193,11 @@ GetArticleURLs <- function (issue.url) {
 }
 ```
 
-So the abstracts of all articles contained in the issue with the URL `https://www.aeaweb.org/issues/475` can be extracted by:
+The abstracts of all articles contained in the issue with the URL `https://www.aeaweb.org/issues/475` can be extracted by `sapply`ing `GetAbstract` over the article URLs obtained by `GetArticleURLs("https://www.aeaweb.org/issues/475")`, which will return a vector of abstracts:
 ```{r}
 abstracts <- sapply(GetArticleURLs("https://www.aeaweb.org/issues/475"), GetAbstract)
 abstracts <- abstracts[2:length(abstracts)] # the first abstract is empty (Front Matter)
-print(abstracts)
+print(abstracts[1])
 ```
 
 ## Drawing word clouds
