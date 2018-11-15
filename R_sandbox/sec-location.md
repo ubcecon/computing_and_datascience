@@ -16,69 +16,26 @@ for (pkg in c("rvest","httr","dplyr","stringr","XML","RCurl","ggplot2","reshape"
  if (!pkg %in% rownames(installed.packages())){install.packages(pkg)}
 }
 library(rvest)
-```
-
-    ## Loading required package: xml2
-
-``` r
 library(dplyr)
-```
-
-    ## 
-    ## Attaching package: 'dplyr'
-
-    ## The following objects are masked from 'package:stats':
-    ## 
-    ##     filter, lag
-
-    ## The following objects are masked from 'package:base':
-    ## 
-    ##     intersect, setdiff, setequal, union
-
-``` r
 library(stringr)
 library(ggmap)
-```
-
-    ## Loading required package: ggplot2
-
-``` r
 library(XML)
-```
-
-    ## 
-    ## Attaching package: 'XML'
-
-    ## The following object is masked from 'package:rvest':
-    ## 
-    ##     xml
-
-``` r
 library(httr)
 library(tm)
 ```
 
-    ## Loading required package: NLP
-
-    ## 
-    ## Attaching package: 'NLP'
-
-    ## The following object is masked from 'package:httr':
-    ## 
-    ##     content
-
-    ## The following object is masked from 'package:ggplot2':
-    ## 
-    ##     annotate
-
 Getting firm addresses from SEC website
 ---------------------------------------
 
-We analyze the following industries:
+The SIC code for industries are available for lookup: [SIC](https://www.sec.gov/info/edgar/siccodes.htm) Could be intersting industries: 6500: REAL ESTATE 6798: Real Estate Investment Trusts 7371: Computer Programming Services
+
+We analyze the following industries: 1400: MINING & QUARRYING OF NONMETALLIC MINERALS (NO FUELS) 5734: RETAIL-COMPUTER & COMPUTER SOFTWARE STORES
 
 ``` r
-SIC.CODES <- c(6798, 7371)
-SIC.NAMES <- c("SIC 6798: Real Estate Investment Trusts","SIC 7371: Computer Programming Services")
+# SIC.CODES <- c(6798, 7371)
+# SIC.NAMES <- c("SIC 6798: Real Estate Investment Trusts","SIC 7371: Computer Programming Services")
+SIC.CODES <- c(1400, 5734)
+SIC.NAMES <- c("SIC 1400:Mining ","SIC 5734:Retail computer")
 ```
 
 Define a function that searches all firms in a given industry from the SEC website:
@@ -129,32 +86,25 @@ firm.df.2 <- ConstructFirmDF(SIC.CODES[2])
 print(head(firm.df.1))
 ```
 
-    ##    firm_code                                                      company
-    ## 1 0001700461                                       1st stREIT Office Inc.
-    ## 2 0001279088                                                   A REIT INC
-    ## 3 0001282552                                        AAMES INVESTMENT CORP
-    ## 4 0000899629                                          ACADIA REALTY TRUST
-    ## 5 0001038522     ACCREDITED MORT LN TR MORT LN ASSET BK CERTS SERS 19961-
-    ## 6 0001137108 ACCREDITED MORT LOAN TR 2000-1 ASSET BACKED NOT SE 2000-1 TR
-    ##   state
-    ## 1    CA
-    ## 2    CA
-    ## 3    CA
-    ## 4    NY
-    ## 5    CA
-    ## 6    MD
+    ##    firm_code                         company state
+    ## 1 0001084477               ADAMSON RICHARD G    NC
+    ## 2 0001164704          ALBERTA EXPLORATION CO    A0
+    ## 3 0001238176   ALBERTA STAR DEVELOPMENT CORP    A1
+    ## 4 0000813621        AMCOL INTERNATIONAL CORP    IL
+    ## 5 0001062493     AMERICAN BENEFITS GROUP INC    FL
+    ## 6 0000225255 AMERICAN RESOURCES GROUP INC/CO    CO
 
 ``` r
 print(head(firm.df.2))
 ```
 
-    ##    firm_code                    company state
-    ## 1 0001627611             12 Retech Corp    NV
-    ## 2 0001023185   ACCELER8 TECHNOLOGY CORP    CO
-    ## 3 0001089799 ACCUIMAGE DIAGNOSTICS CORP    CA
-    ## 4 0001085621                 Actua Corp    PA
-    ## 5 0001607551              ADEPTPROS INC    AZ
-    ## 6 0001002225   ADVENT SOFTWARE INC /DE/    CA
+    ##    firm_code                     company state
+    ## 1 0000833443                BABBAGES INC    TX
+    ## 2 0001537689         Comp Services, Inc.    CA
+    ## 3 0001084954               COMPGEEKS INC    CA
+    ## 4 0000880323                 COMPUSA INC    TX
+    ## 5 0001103833 Crown Equity Holdings, Inc.    NV
+    ## 6 0001041712        CYBERIAN OUTPOST INC    CT
 
 For each individual firm, find the location in the firm's home page.
 
@@ -177,39 +127,39 @@ firm.df.2$address <- sapply(firm.df.2$firm_code, GetLocation)
 print(head(firm.df.1))
 ```
 
-    ##    firm_code                                                      company
-    ## 1 0001700461                                       1st stREIT Office Inc.
-    ## 2 0001279088                                                   A REIT INC
-    ## 3 0001282552                                        AAMES INVESTMENT CORP
-    ## 4 0000899629                                          ACADIA REALTY TRUST
-    ## 5 0001038522     ACCREDITED MORT LN TR MORT LN ASSET BK CERTS SERS 19961-
-    ## 6 0001137108 ACCREDITED MORT LOAN TR 2000-1 ASSET BACKED NOT SE 2000-1 TR
-    ##   state                                                        address
-    ## 1    CA 11601 WILSHIRE BOULEVARD\nSUITE 1690\n\nLOS ANGELES CA 90025\n
-    ## 2    CA        1551 N TUSTIN AVENUE\nSUITE 200\n\nSANTA ANA CA 92705\n
-    ## 3    CA      350 SOUTH GRAND AVENUE\n43RD FL\n\nLOS ANGELES CA 90071\n
-    ## 4    NY         411 THEODORE FREMD AVENUE\nSUITE 300\n\nRYE NY 10580\n
-    ## 5    CA                                3 PARK PLZ\n\nIRVINE CA 92614\n
-    ## 6    MD               11000 BROKEN LAND PARKWAY\n\nCOLUMBIA MD 21044\n
+    ##    firm_code                         company state
+    ## 1 0001084477               ADAMSON RICHARD G    NC
+    ## 2 0001164704          ALBERTA EXPLORATION CO    A0
+    ## 3 0001238176   ALBERTA STAR DEVELOPMENT CORP    A1
+    ## 4 0000813621        AMCOL INTERNATIONAL CORP    IL
+    ## 5 0001062493     AMERICAN BENEFITS GROUP INC    FL
+    ## 6 0000225255 AMERICAN RESOURCES GROUP INC/CO    CO
+    ##                                                                  address
+    ## 1 MARTIN MARIETTA MATERIALS INC\n2710 WYCLIFF ROAD\n\nRALEIGH NC 27607\n
+    ## 2            15 APPLEBROOK CIRCLE SE\n\nCALGARY ALBERTA CANA A0 T2A7S5\n
+    ## 3            675 WEST HASTING STE 200\n\nVANCOUVER BC CANADA A1 V6B1N2\n
+    ## 4                        2870 FORBS AVENUE\n\nHOFFMAN ESTATES IL 60192\n
+    ## 5                 10 FAIRWAY DR\nSUITE 307\n\nDEERFIELD BEACH FL 33441\n
+    ## 6
 
 ``` r
 print(head(firm.df.2))
 ```
 
-    ##    firm_code                    company state
-    ## 1 0001627611             12 Retech Corp    NV
-    ## 2 0001023185   ACCELER8 TECHNOLOGY CORP    CO
-    ## 3 0001089799 ACCUIMAGE DIAGNOSTICS CORP    CA
-    ## 4 0001085621                 Actua Corp    PA
-    ## 5 0001607551              ADEPTPROS INC    AZ
-    ## 6 0001002225   ADVENT SOFTWARE INC /DE/    CA
-    ##                                                          address
-    ## 1        10785 W. TWAIN AVE.,\nSUITE 210\n\nLAS VEGAS NV 89135\n
-    ## 2                   303 E. 17TH AVENUE #108\n\nDENVER CO 80203\n
-    ## 3 501 GRANDVIEW DRIVE\nSTE 100\n\nSOUTH SAN FRANCISCO CA 94080\n
-    ## 4        555 E. LANCASTER AVENUE\nSUITE 640\n\nRADNOR PA 19087\n
-    ## 5             14301 N. 87TH ST\nSTE 317\n\nSCOTTSDALE AZ 85260\n
-    ## 6                    600 TOWNSEND ST\n\nSAN FRANCISCO CA 94103\n
+    ##    firm_code                     company state
+    ## 1 0000833443                BABBAGES INC    TX
+    ## 2 0001537689         Comp Services, Inc.    CA
+    ## 3 0001084954               COMPGEEKS INC    CA
+    ## 4 0000880323                 COMPUSA INC    TX
+    ## 5 0001103833 Crown Equity Holdings, Inc.    NV
+    ## 6 0001041712        CYBERIAN OUTPOST INC    CT
+    ##                                            address
+    ## 1       10741 KING WILLIAM DR\n\nDALLAS TX 75220\n
+    ## 2    1100 PEDRAS ROAD\n#B122\n\nTURLOCK CA 95382\n
+    ## 3                                                 
+    ## 4     14951 NORTH DALLAS PKWY\n\nDALLAS TX 75240\n
+    ## 5 11226 PENTLAND DOWNS ST.\n\nLAS VEGAS NV 89146\n
+    ## 6 27 NORTH MAIN ST\nP O BOX 636\n\nKENT CT 06757\n
 
 Getting location
 ----------------
@@ -244,76 +194,201 @@ Getting multiple locations can be done by using `lapply` function:
 firm.df.1.locations <- lapply(firm.df.1$address, GetGeocode)
 ```
 
-    ## Warning: geocode failed with status ZERO_RESULTS, location = "520 WEST 103RD STREET #108
+    ## Warning: geocode failed with status ZERO_RESULTS, location = "675 WEST HASTING STE 200
     ## 
-    ## KANSAS CITY MO 64114
+    ## VANCOUVER BC CANADA A1 V6B1N2
+    ## "
+
+    ## Warning: geocode failed with status ZERO_RESULTS, location = "835-1100 MELVILLE STREET
+    ## 
+    ## VANCOUVER A1 V6E 4A6
+    ## "
+
+    ## Warning: geocode failed with status ZERO_RESULTS, location = "680 - 1066 WEST HASTINGS STREET
+    ## 
+    ## VANCOUVER A1 V6E 3X2
+    ## "
+
+    ## Warning: geocode failed with status ZERO_RESULTS, location = "405-555 SIXTH STREET
+    ## 
+    ## NEW WESTMINSTER BC A1 V3L 5H1
+    ## "
+
+    ## Warning: geocode failed with status ZERO_RESULTS, location = "SUITE 2600, THREE BENTALL CENTRE
+    ## P.O. BOX 49314, 595 BURRARD STREET
+    ## 
+    ## VANCOUVER A1 V7X 1L3
+    ## "
+
+    ## Warning: geocode failed with status ZERO_RESULTS, location = "#6 HARSTON AVENUE
+    ## MOSMAN
+    ## 
+    ## SYDNEY C3 2088
+    ## "
+
+    ## Warning: geocode failed with status ZERO_RESULTS, location = "1430 - 800 WEST PENDER ST.
+    ## 
+    ## VANCOUVER, B.C. A1 V6C 2V6
+    ## "
+
+    ## Warning: geocode failed with status ZERO_RESULTS, location = "SUITE 300, BOW VALLEY SQUARE 4
+    ## 250 SIXTH AVENUE SW
+    ## 
+    ## CALGARY ALBERTA A0 T2P 3H7
+    ## "
+
+    ## Warning: geocode failed with status ZERO_RESULTS, location = "7425 ARBUTUS STREET
+    ## 
+    ## VANCOUVER A1 V6P5T2
+    ## "
+
+    ## Warning: geocode failed with status ZERO_RESULTS, location = "14727-129 STREET
+    ## 
+    ## EDMONTON A0 T6V 1C4
+    ## "
+
+    ## Warning: geocode failed with status ZERO_RESULTS, location = "14TH FLOOR 400 BURRARD STREET
+    ## V6C 3G2
+    ## 
+    ## VANCOUVER BC A1 V6C 3G2
+    ## "
+
+    ## Warning: geocode failed with status ZERO_RESULTS, location = "SUITE 413
+    ## 595 BURRARD STREET
+    ## 
+    ## VANCOUVER A1 V7X 1J1
+    ## "
+
+    ## Warning: geocode failed with status ZERO_RESULTS, location = "SUITE 1240
+    ## 1140 WEST PENDER STREET
+    ## 
+    ## VANCOUVER A1 V6E 4G1
+    ## "
+
+    ## Warning: geocode failed with status ZERO_RESULTS, location = "905 WEST PENDER STREET
+    ## SUITE 200
+    ## 
+    ## VANCOUVER A1 V6C 1L6
+    ## "
+
+    ## Warning: geocode failed with status ZERO_RESULTS, location = "SUITE 2100 1177 WEST HASTINGS STREET
+    ## 
+    ## VANCOUVER A1 V6E 2K3
+    ## "
+
+    ## Warning: geocode failed with status ZERO_RESULTS, location = "32603 FLEMING AVENUE
+    ## 
+    ## MISSION A1 V2V 2G8
+    ## "
+
+    ## Warning: geocode failed with status ZERO_RESULTS, location = "1111 MELVILLE STREET, SUITE 1100
+    ## 
+    ## VANCOUVER A1 V6E 3V6
+    ## "
+
+    ## Warning: geocode failed with status ZERO_RESULTS, location = "250 EAST FIFTH STREET
+    ## 15 FLOOR PMB #121
+    ## 
+    ## CINCINNATI OH 45202
+    ## "
+
+    ## Warning: geocode failed with status ZERO_RESULTS, location = "10655 NE 4TH STREET #400
+    ## 
+    ## BELLEVUE WA 98004
+    ## "
+
+    ## Warning: geocode failed with status ZERO_RESULTS, location = "200 BURRARD STREET, SUITE 650
+    ## 
+    ## VANCOUVER A1 V6C 3L6
+    ## "
+
+    ## Warning: geocode failed with status ZERO_RESULTS, location = "601 WEST BROADWAY SUITE U13
+    ## V5Z 4C2
+    ## 
+    ## VANCOUVER BC
+    ## "
+
+    ## Warning: geocode failed with status ZERO_RESULTS, location = "SUITE 1238
+    ## 200 GRANVILLE STREET
+    ## 
+    ## VANCOUVER A1 V6C 1S4
+    ## "
+
+    ## Warning: geocode failed with status ZERO_RESULTS, location = "SUITE 614
+    ## 475 HOWE STREET
+    ## 
+    ## VANCOUVER A1 V6C 2B3
+    ## "
+
+    ## Warning: geocode failed with status ZERO_RESULTS, location = "FLORASTRASSE 14
+    ## 
+    ## ZURICH V8 CH-8008
+    ## "
+
+    ## Warning: geocode failed with status ZERO_RESULTS, location = "SUITE 1400
+    ## 400 BURRARD STREET
+    ## 
+    ## VANCOUVER A1 V6C 3A6
+    ## "
+
+    ## Warning: geocode failed with status ZERO_RESULTS, location = "2393-,595 BURRARD ST
+    ## 
+    ## VANCOUVER A1 V7X 1K8
+    ## "
+
+    ## Warning: geocode failed with status ZERO_RESULTS, location = "SUITE 1660
+    ## 999 WEST HASTINGS STREET
+    ## 
+    ## VANCOUVER A1 V6C 2W2
+    ## "
+
+    ## Warning: geocode failed with status ZERO_RESULTS, location = "800 WEST PENDER STREET
+    ## SUITE 423
+    ## 
+    ## VANCOUVER A1 V6C 2V6
+    ## "
+
+    ## Warning: geocode failed with status ZERO_RESULTS, location = "3123 - 595 BURRARD STREET
+    ## 
+    ## VANCOUVER A1 V7X 1J1
+    ## "
+
+    ## Warning: geocode failed with status ZERO_RESULTS, location = "SUITE 1650
+    ## 1055 WEST HASTINGS STREET
+    ## 
+    ## VANCOUVER A1 V6E 2E9
+    ## "
+
+    ## Warning: geocode failed with status ZERO_RESULTS, location = "SUITE 750, 625 HOWE ST.
+    ## 
+    ## VANCOUVER A1 V6C 2T6
+    ## "
+
+    ## Warning: geocode failed with status ZERO_RESULTS, location = "SUITE 610
+    ## 815 WEST HASTINGS STREET
+    ## 
+    ## VANCOUVER A1 V6C 1B4
+    ## "
+
+    ## Warning: geocode failed with status ZERO_RESULTS, location = "HAIWANG STREET, YANGZI AVENUE
+    ## COASTAL ECONOMIC ZONE
+    ## 
+    ## WEIFANG CITY, SHANDONG PROVINC F4 430010
+    ## "
+
+    ## Warning: geocode failed with status ZERO_RESULTS, location = "413 19TH STREET #223
+    ## 
+    ## LYNDEN WA 98264
     ## "
 
 ``` r
 firm.df.2.locations <- lapply(firm.df.2$address, GetGeocode)
 ```
 
-    ## Warning: geocode failed with status ZERO_RESULTS, location = "303 E. 17TH AVENUE #108
+    ## Warning: geocode failed with status ZERO_RESULTS, location = "1100 PEDRAS ROAD
+    ## #B122
     ## 
-    ## DENVER CO 80203
-    ## "
-
-    ## Warning: geocode failed with status ZERO_RESULTS, location = "ROOM 1904, 19/F. JUBILEE CENTRE
-    ## 18 FENWICK STREET
-    ## 
-    ## WANCHAI K3 00000
-    ## "
-
-    ## Warning: geocode failed with status ZERO_RESULTS, location = "13511 VULCAN WAY
-    ## V6V 1K4
-    ## 
-    ## RICHMOND BC CANADA A1
-    ## "
-
-    ## Warning: geocode failed with status ZERO_RESULTS, location = "2150 SCOTIA ONE
-    ## 10060 JASPER AVE
-    ## 
-    ## EDMONTON ALBERTA
-    ## "
-
-    ## Warning: geocode failed with status ZERO_RESULTS, location = "1010 SHERBROOKE ST WEST
-    ## STE 1610
-    ## 
-    ## MONTREAL QUEBEC CANA A8 00000
-    ## "
-
-    ## Warning: geocode failed with status ZERO_RESULTS, location = "BEIJING PUBLISHING HOUSE
-    ## 6 NORTH THIRD RING ROAD
-    ## 
-    ## BEIJING F4 100120
-    ## "
-
-    ## Warning: geocode failed with status ZERO_RESULTS, location = "UNIT 703-8280 WESTMINSTER HIGHWAY
-    ## 
-    ## RICHMOND, B.C. Z4 V6X 3W3
-    ## "
-
-    ## Warning: geocode failed with status ZERO_RESULTS, location = "PKWY PLAZA #101
-    ## 110 ROOSEVELT BLVD
-    ## 
-    ## MARMORA NJ 08223
-    ## "
-
-    ## Warning: geocode failed with status ZERO_RESULTS, location = "ROOM A1103, BUILDING A, CHENGJIAN PLAZA
-    ## NO. 18 BEITAIPINGZHUANG ROAD, HAIDIAN
-    ## 
-    ## BEIJING F4 100088
-    ## "
-
-    ## Warning: geocode failed with status ZERO_RESULTS, location = "2020 WINSTON PARK DRIVE
-    ## SUITE 201
-    ## 
-    ## OAKVILLE A6 L6H 6X7
-    ## "
-
-    ## Warning: geocode failed with status ZERO_RESULTS, location = "JOOP GEESINKWEG 541-542
-    ## 
-    ## AMSTERDAM P7 1096-AX
+    ## TURLOCK CA 95382
     ## "
 
 ``` r
@@ -321,28 +396,28 @@ print(head(firm.df.1.locations))
 ```
 
     ## [[1]]
-    ##         lon     lat
-    ## 1 -118.4603 34.0498
+    ##         lon      lat
+    ## 1 -78.69467 35.81571
     ## 
     ## [[2]]
-    ##         lon      lat
-    ## 1 -117.8342 33.75961
+    ##       lon     lat
+    ## 1 35.0724 39.8049
     ## 
     ## [[3]]
-    ##         lon      lat
-    ## 1 -118.2518 34.05227
+    ##   lon lat
+    ## 1  NA  NA
     ## 
     ## [[4]]
     ##         lon      lat
-    ## 1 -73.69876 40.97578
+    ## 1 -88.38199 41.86861
     ## 
     ## [[5]]
-    ##         lon     lat
-    ## 1 -117.8387 33.6786
+    ##         lon      lat
+    ## 1 -80.11057 26.31859
     ## 
     ## [[6]]
-    ##         lon      lat
-    ## 1 -76.86467 39.21984
+    ##   lon lat
+    ## 1  NA  NA
 
 Note that some locations might not have been fetched due to errors (some addresses might not exist anymore). `lapply` performs broadcasting a given function (second parameter) to a vector (first parameter) and returns a list, which is why it is called *l*`apply`.
 
@@ -384,6 +459,6 @@ ggplot(location.df, aes(x=lon, y=lat, color=SIC)) +
     theme(legend.position="bottom")
 ```
 
-    ## Warning: Removed 23 rows containing missing values (geom_point).
+    ## Warning: Removed 46 rows containing missing values (geom_point).
 
 ![](sec-location_files/figure-markdown_github/plot-locations-1.png)

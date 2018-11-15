@@ -22,7 +22,7 @@ The documentation of ggmap: [ggmap Documentation](https://cran.r-project.org/web
 
 Other than that, the natural language processing is done using tm and stringr.
 
-```{r setup, include=TRUE,warning=FALSE}
+```{r setup, include=TRUE,message=FALSE}
 for (pkg in c("rvest","httr","dplyr","stringr","XML","RCurl","ggplot2","reshape","tm","ggmap")){
  if (!pkg %in% rownames(installed.packages())){install.packages(pkg)}
 }
@@ -36,10 +36,21 @@ library(tm)
 ```
 
 ## Getting firm addresses from SEC website
+
+The SIC code for industries are available for lookup: [SIC](https://www.sec.gov/info/edgar/siccodes.htm) 
+Could be intersting industries:
+6500:	REAL ESTATE
+6798: Real Estate Investment Trusts
+7371: Computer Programming Services
+
 We analyze the following industries:
+1400:	MINING & QUARRYING OF NONMETALLIC MINERALS (NO FUELS)
+5734:	RETAIL-COMPUTER & COMPUTER SOFTWARE STORES
 ```{r sic-defn}
-SIC.CODES <- c(6798, 7371)
-SIC.NAMES <- c("SIC 6798: Real Estate Investment Trusts","SIC 7371: Computer Programming Services")
+# SIC.CODES <- c(6798, 7371)
+# SIC.NAMES <- c("SIC 6798: Real Estate Investment Trusts","SIC 7371: Computer Programming Services")
+SIC.CODES <- c(1400, 5734)
+SIC.NAMES <- c("SIC 1400:Mining ","SIC 5734:Retail computer")
 ```
 
 Define a function that searches all firms in a given industry from the SEC website:
