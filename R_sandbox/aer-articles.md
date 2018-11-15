@@ -1,3 +1,5 @@
+*DISCLAIMER: Do not exploit the instruction below to hammer the AEA website; MIT license applies.*
+
 Learning goals:
 
 -   understand basics of HTML and analyze websites
@@ -285,6 +287,7 @@ To do so, construct a function that returns the abstract article given an articl
 
 ``` r
 GetAbstract <- function (article.url) {
+  Sys.sleep(0.5) # wait for one half second to prevent overloading
   (read_html(article.url) %>%
     html_nodes("section section") %>%
     html_text())[3]
