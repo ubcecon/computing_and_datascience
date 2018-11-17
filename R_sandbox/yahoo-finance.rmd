@@ -31,6 +31,7 @@ tables <- readHTMLTable(web_page_parsed)
 print(head(tables))
 ```
 Data frame with Ticker, ind, quarter, value
+https://finance.yahoo.com/quote/AROC/analysis?p=AROC&.tsrc=fin-srch
 
 http://markets.money.cnn.com/Marketsdata/Sectors
 

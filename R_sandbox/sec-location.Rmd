@@ -9,8 +9,11 @@ output:
 ---
 # SEC firm locations
 
-This is an example of scraping location information of firms.
-The firms uses rvest, for scraping data of a HTML page given the node number.
+This is an example of scraping location information of firms from the [SEC websites](https://www.sec.gov/edgar/searchedgar/companysearch.html).
+
+We use rvest for scraping data of a HTML page given the node name.
+
+The scraping is down recursively by extracting the firm's identifier through the search page(SIK) and create a url linked to the firm's web page indexed by the firm's identifier.
 
 The doccumentation of R vest file: 
 [Rvest Documentation](https://cran.r-project.org/web/packages/rvest/rvest.pdf)
@@ -37,7 +40,7 @@ library(tm)
 
 ## Getting firm addresses from SEC website
 
-The SIC code for industries are available for lookup: [SIC](https://www.sec.gov/info/edgar/siccodes.htm) 
+The SIC code for industries are available for lookup: [SIC code lookup](https://www.sec.gov/info/edgar/siccodes.htm) 
 
 Could be intersting industries: 
 
@@ -60,7 +63,7 @@ SIC.NAMES <- c("SIC 1400:Mining ","SIC 5734:Retail computer")
 
 Define a function that searches all firms in a given industry from the SEC website:
 ```{r search-firm}
-MAX.PAGE <- 1 # maximum number of pages to be read (each page contains 100 firms)
+MAX.PAGE <- 2 # maximum number of pages to be read (each page contains 100 firms)
 
 ConstructFirmDF <- function(sic) {
   i <- 0
@@ -82,7 +85,7 @@ ConstructFirmDF <- function(sic) {
     # If the page has an empty table, it means we reach the end of the search
     # The info will contain a string fetched from the HTML file
     i <- i+1 #Search for next 100 records
-    if (typeof(info) != "list"|| (i > MAX.PAGE) ) {
+    if (typeof(info) != "list"|| (i > MAX.PAGE)||dim(info)[1] == 0 ) {
       break #If the info returns text, stop searching
     }
     names(info) <- c("firm_code","company","state") #Rename the list to match the column names

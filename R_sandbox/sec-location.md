@@ -1,7 +1,11 @@
 SEC firm locations
 ==================
 
-This is an example of scraping location information of firms. The firms uses rvest, for scraping data of a HTML page given the node number.
+This is an example of scraping location information of firms from the [SEC websites](https://www.sec.gov/edgar/searchedgar/companysearch.html).
+
+We use rvest for scraping data of a HTML page given the node name.
+
+The scraping is down recursively by extracting the firm's identifier through the search page(SIK) and create a url linked to the firm's web page indexed by the firm's identifier.
 
 The doccumentation of R vest file: [Rvest Documentation](https://cran.r-project.org/web/packages/rvest/rvest.pdf)
 
@@ -27,7 +31,7 @@ library(tm)
 Getting firm addresses from SEC website
 ---------------------------------------
 
-The SIC code for industries are available for lookup: [SIC](https://www.sec.gov/info/edgar/siccodes.htm)
+The SIC code for industries are available for lookup: [SIC code lookup](https://www.sec.gov/info/edgar/siccodes.htm)
 
 Could be intersting industries:
 
@@ -51,7 +55,7 @@ SIC.NAMES <- c("SIC 1400:Mining ","SIC 5734:Retail computer")
 Define a function that searches all firms in a given industry from the SEC website:
 
 ``` r
-MAX.PAGE <- 1 # maximum number of pages to be read (each page contains 100 firms)
+MAX.PAGE <- 2 # maximum number of pages to be read (each page contains 100 firms)
 
 ConstructFirmDF <- function(sic) {
   i <- 0
@@ -73,7 +77,7 @@ ConstructFirmDF <- function(sic) {
     # If the page has an empty table, it means we reach the end of the search
     # The info will contain a string fetched from the HTML file
     i <- i+1 #Search for next 100 records
-    if (typeof(info) != "list"|| (i > MAX.PAGE) ) {
+    if (typeof(info) != "list"|| (i > MAX.PAGE)||dim(info)[1] == 0 ) {
       break #If the info returns text, stop searching
     }
     names(info) <- c("firm_code","company","state") #Rename the list to match the column names
@@ -87,6 +91,7 @@ ConstructFirmDF <- function(sic) {
 firm.df.1 <- ConstructFirmDF(SIC.CODES[1]) #Search for 100 records for firm 1
 ```
 
+    ## No encoding supplied: defaulting to UTF-8.
     ## No encoding supplied: defaulting to UTF-8.
     ## No encoding supplied: defaulting to UTF-8.
 
@@ -396,6 +401,192 @@ firm.df.1.locations <- lapply(firm.df.1$address, GetGeocode) #Get all the longti
     ## LYNDEN WA 98264
     ## "
 
+    ## Warning: geocode failed with status ZERO_RESULTS, location = "3045 SOUTHCREEK ROAD
+    ## UNIT 15A
+    ## 
+    ## MISSISSAUGA A6 L4X 2E9
+    ## "
+
+    ## Warning: geocode failed with status ZERO_RESULTS, location = "SUITE 220
+    ## 1010 - 1ST STREET S.W.
+    ## 
+    ## CALGARY A0 T2R 1K4
+    ## "
+
+    ## Warning: geocode failed with status ZERO_RESULTS, location = "PO BOX 95012
+    ## 8726 BARNARD ST VANCOUVER BC V6P6V4
+    ## "
+
+    ## Warning: geocode failed with status ZERO_RESULTS, location = "SUITE 1640 - 1066 WEST HASTINGS STREET
+    ## BOX 12543
+    ## 
+    ## VANCOUVER A1 V6E 3X1
+    ## "
+
+    ## Warning: geocode failed with status ZERO_RESULTS, location = "#162 - 2906 WEST BROADWAY
+    ## 
+    ## VANCOUVER A1 V6K 2G8
+    ## "
+
+    ## Warning: geocode failed with status ZERO_RESULTS, location = "215-800 WEST PENDER STREET
+    ## 
+    ## VANCOUVER A1 V6C 2V6
+    ## "
+
+    ## Warning: geocode failed with status ZERO_RESULTS, location = "SUITE 575
+    ## 510 BURRARD STREET
+    ## 
+    ## VANCOUVER A1 V6C 3A8
+    ## "
+
+    ## Warning: geocode failed with status ZERO_RESULTS, location = "206 837 WEST HASTINGS ST
+    ## 
+    ## VANCOUVER BC CANADA A1 V6C3N6
+    ## "
+
+    ## Warning: geocode failed with status ZERO_RESULTS, location = "1859 SPYGLASS PLACE
+    ## STE 414
+    ## 
+    ## VANCOUVER BRITISH CO A6 9999999
+    ## "
+
+    ## Warning: geocode failed with status ZERO_RESULTS, location = "400 FIFTH AVENUE SW
+    ## SUITE 530
+    ## 
+    ## ALBERTA A7 00000
+    ## "
+
+    ## Warning: geocode failed with status ZERO_RESULTS, location = "MATIAS COUSI?O 82
+    ## OFICINA 806
+    ## 
+    ## SANTIAGO F3 00000
+    ## "
+
+    ## Warning: geocode failed with status ZERO_RESULTS, location = "4448 PATTERDALE DRIVE
+    ## 
+    ## NORTH VANCOUVER A1 V7R 4L8
+    ## "
+
+    ## Warning: geocode failed with status ZERO_RESULTS, location = "347 BAY STREET
+    ## SUITE 204
+    ## 
+    ## TORONTO A6 V7S 2A2
+    ## "
+
+    ## Warning: geocode failed with status ZERO_RESULTS, location = "402 - 121 RICHMOND STREET WEST
+    ## 
+    ## TORONTO A6 M5H 2K1
+    ## "
+
+    ## Warning: geocode failed with status ZERO_RESULTS, location = "1574 GULF RD. #1505
+    ## 
+    ## POINT ROBERTS WA 98281
+    ## "
+
+    ## Warning: geocode failed with status ZERO_RESULTS, location = "UNIT M2-3, LEVEL M2, THE VERTICAL PODIUM
+    ## AVE 3, BANGSAR SOUTH, #8 JALAN KERINCHI
+    ## 
+    ## KUALA LUMPUR N8 59200
+    ## "
+
+    ## Warning: geocode failed with status ZERO_RESULTS, location = "141 ADELAIDE STREET WEST, SUITE 420
+    ## 
+    ## TORONTO A6 M5H3L5
+    ## "
+
+    ## Warning: geocode failed with status ZERO_RESULTS, location = "2000-1055 WEST HASTINGS ST
+    ## 
+    ## VANCOUVER BRITISH COLUMBIA A1 V6E2E9
+    ## "
+
+    ## Warning: geocode failed with status ZERO_RESULTS, location = "#709 - 837 W. HASTINGS STREET
+    ## 
+    ## VANCOUVER A1 V6C 3N6
+    ## "
+
+    ## Warning: geocode failed with status ZERO_RESULTS, location = "SUITE 608, 1199 WEST PENDER STREET
+    ## 
+    ## VANCOUVER A1 V6E 2R1
+    ## "
+
+    ## Warning: geocode failed with status ZERO_RESULTS, location = "LEVEL 9, BGC CENTRE, 28 THE ESPLANADE
+    ## 
+    ## PERTH WA C3 6000
+    ## "
+
+    ## Warning: geocode failed with status ZERO_RESULTS, location = "..
+    ## 4655 MONCTON STREET
+    ## 
+    ## RICHMOND A1 V7E 3A8
+    ## "
+
+    ## Warning: geocode failed with status ZERO_RESULTS, location = "SUITE 3123-595 BURRARD ST.
+    ## 
+    ## VANCOUVER A1 V7X 1J1
+    ## "
+
+    ## Warning: geocode failed with status ZERO_RESULTS, location = "SUITE 300
+    ## 224 - 4TH AVENUE
+    ## 
+    ## SOUTH SASKATOON A9 S7K5M5
+    ## "
+
+    ## Warning: geocode failed with status ZERO_RESULTS, location = "789 WEST PENDER STREET
+    ## SUITE 1010
+    ## 
+    ## VANCOUVER A1 V6C 1H2
+    ## "
+
+    ## Warning in readLines(connect, warn = FALSE): cannot open URL 'http://
+    ## www.datasciencetoolkit.org/maps/api/geocode/json?address=27%20ST.
+    ## %20JAMES'S%20STREET%0A%0ALONDON%20X0%20SW1A%201HA%0A&sensor=false': HTTP
+    ## status was '500 Internal Server Error'
+
+    ## Warning in geocode(address, source = "dsk"):   geocoding failed for "27 ST. JAMES'S STREET
+    ## 
+    ## LONDON X0 SW1A 1HA
+    ## ".
+    ##   if accompanied by 500 Internal Server Error with using dsk, try google.
+
+    ## Warning: geocode failed with status ZERO_RESULTS, location = "580 HORNBY, SUITE 750
+    ## 
+    ## VANCOUVER A1 V6C 3B6
+    ## "
+
+    ## Warning: geocode failed with status ZERO_RESULTS, location = "UNIT 520
+    ## 409 GRANVILLE STREET
+    ## 
+    ## VANCOUVER  BC A1 V6C 1T2
+    ## "
+
+    ## Warning: geocode failed with status ZERO_RESULTS, location = "550 BURRARD ST
+    ## SUITE 3300, BENTALL 5
+    ## 
+    ## VANCOUVER A1 V6C 0B3
+    ## "
+
+    ## Warning: geocode failed with status ZERO_RESULTS, location = "3RD FLOOR, 157 ALEXANDER STREET
+    ## 
+    ## VANCOUVER A1 V6A 1B8
+    ## "
+
+    ## Warning: geocode failed with status ZERO_RESULTS, location = "SUITE 1023, 10/F., OCEAN CENTRE
+    ## 5 CANTON RD., TSIM SHA TSUI
+    ## 
+    ## KOWLOON K3 00000
+    ## "
+
+    ## Warning: geocode failed with status ZERO_RESULTS, location = "SUITE 502-815 HORNBY STREET
+    ## VANCOUVER, BRITISH COLUMBIA
+    ## 
+    ## VANCOUVER, B.C. A1 V6Z 2E6
+    ## "
+
+    ## Warning: geocode failed with status ZERO_RESULTS, location = "SUITE 500, 926 - 5TH AVENUE S.W.
+    ## 
+    ## CALGARY A0 T2P 0N7
+    ## "
+
 ``` r
 firm.df.2.locations <- lapply(firm.df.2$address, GetGeocode)
 ```
@@ -474,6 +665,6 @@ ggplot(location.df, aes(x=lon, y=lat, color=SIC)) +
     theme(legend.position="bottom")
 ```
 
-    ## Warning: Removed 46 rows containing missing values (geom_point).
+    ## Warning: Removed 87 rows containing missing values (geom_point).
 
 ![](sec-location_files/figure-markdown_github/plot-locations-1.png)
