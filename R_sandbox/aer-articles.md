@@ -94,16 +94,13 @@ print(issue.urls$value) # since issue.urls is a data.frame, need to extract $val
 but note that they are all *relative* (to the AER website home) URLs. Thus, to get the correct URLs, `https://www.aeaweb.org/` has to be appended in front. In R this can be done by using `paste0`, which can be used for vectorized strings too.
 
 ``` r
-issue.urls <- paste0("https://www.aeaweb.org/", issue.urls$value)
+issue.urls <- paste0("https://www.aeaweb.org", issue.urls$value)
 print(head(issue.urls))
 ```
 
-    ## [1] "https://www.aeaweb.org//issues/526"
-    ## [2] "https://www.aeaweb.org//issues/523"
-    ## [3] "https://www.aeaweb.org//issues/519"
-    ## [4] "https://www.aeaweb.org//issues/517"
-    ## [5] "https://www.aeaweb.org//issues/513"
-    ## [6] "https://www.aeaweb.org//issues/510"
+    ## [1] "https://www.aeaweb.org/issues/526" "https://www.aeaweb.org/issues/523"
+    ## [3] "https://www.aeaweb.org/issues/519" "https://www.aeaweb.org/issues/517"
+    ## [5] "https://www.aeaweb.org/issues/513" "https://www.aeaweb.org/issues/510"
 
 ### Extracting years of publication
 
@@ -146,13 +143,13 @@ issue.df <- data.frame(issue = issue.urls, year = issue.years)
 print(head(issue.df))
 ```
 
-    ##                                issue year
-    ## 1 https://www.aeaweb.org//issues/526 2018
-    ## 2 https://www.aeaweb.org//issues/523 2018
-    ## 3 https://www.aeaweb.org//issues/519 2018
-    ## 4 https://www.aeaweb.org//issues/517 2018
-    ## 5 https://www.aeaweb.org//issues/513 2018
-    ## 6 https://www.aeaweb.org//issues/510 2018
+    ##                               issue year
+    ## 1 https://www.aeaweb.org/issues/526 2018
+    ## 2 https://www.aeaweb.org/issues/523 2018
+    ## 3 https://www.aeaweb.org/issues/519 2018
+    ## 4 https://www.aeaweb.org/issues/517 2018
+    ## 5 https://www.aeaweb.org/issues/513 2018
+    ## 6 https://www.aeaweb.org/issues/510 2018
 
 Extracting article names and URLs from a single issue
 -----------------------------------------------------
@@ -287,7 +284,6 @@ To do so, construct a function that returns the abstract article given an articl
 
 ``` r
 GetAbstract <- function (article.url) {
-  Sys.sleep(0.5) # wait for one half second to prevent overloading
   (read_html(article.url) %>%
     html_nodes("section section") %>%
     html_text())[3]
@@ -469,8 +465,24 @@ And the word cloud:
 ``` r
 set.seed(1234)
 wordcloud(words = freq.table$word, freq = freq.table$freq, min.freq = 1,
-          max.words=200, random.order=FALSE, rot.per=0.35, 
+          max.words=200, random.order=FALSE, rot.per=0.00, 
           colors=brewer.pal(8, "Dark2"))
 ```
 
 ![](aer-articles_files/figure-markdown_github/construct-word-cloud-1.png)
+
+### Extensions
+
+One can combine all the works together above to generate word cloud plots for abstracts by years, instead of a single issue:
+
+Here's one for 2014:
+
+![Wordcloud for 2014](aer-articles_files_aux/figure-markdown_github/wordcloud-2014.png)
+
+One for 2016:
+
+![Wordcloud for 2016](aer-articles_files_aux/figure-markdown_github/wordcloud-2016.png)
+
+One for 2018:
+
+![Wordcloud for 2018](aer-articles_files_aux/figure-markdown_github/wordcloud-2018.png)
