@@ -1,0 +1,2 @@
+# Continuous time methods for macroeconomics with Julia
+[Notes](https://github.com/ubcecon/computing_and_datascience/tree/master/continuous_time_methods/notes) and [Julia tutorials](https://github.com/ubcecon/computing_and_datascience/tree/master/continuous_time_methods/tutorials) to explore numerical methods for continuous-time models in macroeconomics.
