@@ -91,7 +91,7 @@ ks = range(0.001*k_ss, stop = 2*k_ss, length = 10000)
 settings = (ks = ks,
             Δv = 1000, 
             vs0 = (A_productivity .* ks .^ α) .^ (1-params.γ) / (1-params.γ) / params.ρ,
-            maxit = 100, threshold = 1e-6, verbose = false)
+            maxit = 100, threshold = 1e-8, verbose = false)
 ~~~~~~~~~~~~~
 
 
@@ -179,7 +179,7 @@ vs, cs = @btime compute_optimal_plans(params, settings)
 
 
 ~~~~
-75.689 ms (2865976 allocations: 61.75 MiB)
+102.962 ms (3821300 allocations: 82.30 MiB)
 ~~~~
 
 
