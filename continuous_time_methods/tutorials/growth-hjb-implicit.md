@@ -5,9 +5,7 @@ date        : 2019-01-29
 ---
 
 ### About this document
-Presented by Chiyoung Ahn (@chiyahn), written for `Weave.jl`. 
-
-The notebook is based on Ben Moll's notes in http://www.princeton.edu/~moll/HACTproject/HACT_Additional_Codes.pdf and http://www.princeton.edu/~moll/HACTproject/HJB_NGM_implicit.m
+Presented by Chiyoung Ahn (@chiyahn), written for `Weave.jl`, based on Ben Moll's [note](http://www.princeton.edu/~moll/HACTproject/HACT_Additional_Codes.pdf) and [code](http://www.princeton.edu/~moll/HACTproject/HJB_NGM_implicit.m).
 
 
 ~~~~{.julia}
