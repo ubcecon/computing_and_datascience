@@ -19,10 +19,16 @@ gr(fmt = :png); # save plots in .png
 
 
 
+## Model
+Consider finding the optimal consumption plan $c(t)$ for
+
+$$\max_{\{c(t)\}_{t \geq 0} } \int e^{-\rho t } u(c(t)) dt$$
+
+with $u(c(t)) = c(t)^{1-\gamma} / (1-\gamma)$ for some $\gamma \neq 1$ and the following law of motion for $k$:
+
+$$\dot k(t) = F(k(t)) - \delta k(t) - c(t)$$
+
 ## Setup
-
-
-
 ### Utility function
 ~~~~{.julia}
 γ = 2.0
@@ -181,7 +187,7 @@ vs, cs = @btime compute_optimal_plans(params, settings)
 
 
 ~~~~
-102.322 ms (3821300 allocations: 82.30 MiB)
+101.642 ms (3821300 allocations: 82.30 MiB)
 ~~~~
 
 
