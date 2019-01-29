@@ -54,7 +54,7 @@ c(v_prime) = v_prime^(-1/γ); # consumption by derivative of value function at c
 # u: utility function that maps c to a real number
 # u_prime: derivative of utility function that maps c to a real number
 # f: law of motion function that maps k (state), c (control) to the derivative of k
-# c: consumption function that maps v_prime (derivative of v at certain k) to a real number
+# c: control by v_prime; maps v_prime (derivative of v at certain k) to consumption (control)
 # c_ss: consumption (control) when v' = 0 (i.e. steady state)
 params = (ρ = 0.05, δ = δ, γ = γ, F = F, u = u, u_prime = u_prime, f = f, c = c, c_ss = 0.0)
 ```
