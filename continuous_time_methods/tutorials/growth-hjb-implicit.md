@@ -21,15 +21,6 @@ gr(fmt = :png); # save plots in .png
 
 ## Setup
 
-### Production function
-~~~~{.julia}
-A_productivity = 1.0
-α = 0.3 
-F(k) = A_productivity*k^α;
-~~~~~~~~~~~~~
-
-
-
 
 
 ### Utility function
@@ -44,9 +35,20 @@ u_prime(c) = c^(-γ) # derivative of payoff function by control variable (consum
 
 
 ### Law of motion
+Define a production as follows first:
+~~~~{.julia}
+A_productivity = 1.0
+α = 0.3 
+F(k) = A_productivity*k^α;
+~~~~~~~~~~~~~
+
+
+
+
+The corresponding law of motion for `k` given current `k` (state) and `c` (control)
 ~~~~{.julia}
 δ = 0.05
-f(k, c) = F(k) - δ*k - c; # law of motion for state variable (saving)
+f(k, c) = F(k) - δ*k - c; # law of motion for saving (state)
 ~~~~~~~~~~~~~
 
 
@@ -179,7 +181,7 @@ vs, cs = @btime compute_optimal_plans(params, settings)
 
 
 ~~~~
-102.962 ms (3821300 allocations: 82.30 MiB)
+101.223 ms (3821300 allocations: 82.30 MiB)
 ~~~~
 
 
