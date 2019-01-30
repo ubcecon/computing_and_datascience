@@ -1,7 +1,7 @@
 ---
 title       : "Solving HJB equation for neoclassical growth models"
 author      : Chiyoung Ahn (@chiyahn)
-date        : 2019-01-29
+date        : 2019-01-30
 ---
 
 ### About this document
@@ -115,6 +115,7 @@ function compute_optimal_plans(params, settings)
 
     # initial guess
     vs = vs0; 
+    vs_history = zeros(P, maxit)
     # save control (consumption) plan as well
     cs = zeros(P) 
 
@@ -122,8 +123,8 @@ function compute_optimal_plans(params, settings)
     for n in 1:maxit
         # compute derivatives by FD and BD
         dv = diff(vs) ./ Δk
-        dv_f = [dv; NaN] # forward difference
-        dv_b = [NaN; dv] # backward difference
+        dv_f = [dv; dv[end]] # forward difference
+        dv_b = [dv[1]; dv] # backward difference
         dv_0 = u_prime.(f.(ks, fill(c_ss, P)))
 
         # define the corresponding drifts
@@ -159,13 +160,14 @@ function compute_optimal_plans(params, settings)
         # check termination condition 
         if (maximum(abs.(vs-vs_new)) < threshold)
             if (verbose) println("Value function converged -- total number of iterations: $n") end
-            return (vs = vs, cs = cs)
+            return (vs = vs, cs = cs, vs_history = vs_history) 
         end
         
         # update vs_{n+1}
         vs = vs_new
+        vs_history[:,n] = vs
     end
-    return (vs = vs, cs = cs) 
+    return (vs = vs, cs = cs, vs_history = vs_history) 
 end
 ~~~~~~~~~~~~~
 
@@ -180,14 +182,29 @@ compute_optimal_plans (generic function with 1 method)
 
 ## Solve
 ~~~~{.julia}
-vs, cs = @btime compute_optimal_plans(params, settings)
+vs, cs, vs_history = @btime compute_optimal_plans(params, settings)
 ~~~~~~~~~~~~~
 
 
 ~~~~
-101.642 ms (3821300 allocations: 82.30 MiB)
+107.524 ms (3821333 allocations: 89.93 MiB)
 ~~~~
 
+
+
+
+
+Plot for `v_n(k)` path by `n` (iteration step):
+
+~~~~{.julia}
+plot(ks, vs_history[:,1:3],
+    linewidth = 3,
+    title="Value function per iteration step v_n(k)",xaxis="k",yaxis="v(k)",
+    label = string.("v_",1:3))
+~~~~~~~~~~~~~
+
+
+![](figures/growth-hjb-implicit_10_1.png)\ 
 
 
 
@@ -201,7 +218,7 @@ plot(ks, vs,
 ~~~~~~~~~~~~~
 
 
-![](figures/growth-hjb-implicit_10_1.png)\ 
+![](figures/growth-hjb-implicit_11_1.png)\ 
 
 
 
@@ -214,7 +231,7 @@ plot(ks, cs,
 ~~~~~~~~~~~~~
 
 
-![](figures/growth-hjb-implicit_11_1.png)\ 
+![](figures/growth-hjb-implicit_12_1.png)\ 
 
 
 
@@ -229,5 +246,5 @@ plot!([.0], st = :hline, linestyle = :dot, lw = 3) # zero saving line
 ~~~~~~~~~~~~~
 
 
-![](figures/growth-hjb-implicit_12_1.png)\ 
+![](figures/growth-hjb-implicit_13_1.png)\ 
 

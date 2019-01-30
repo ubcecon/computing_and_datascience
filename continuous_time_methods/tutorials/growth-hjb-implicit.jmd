@@ -89,6 +89,7 @@ function compute_optimal_plans(params, settings)
 
     # initial guess
     vs = vs0; 
+    vs_history = zeros(P, maxit)
     # save control (consumption) plan as well
     cs = zeros(P) 
 
@@ -96,8 +97,8 @@ function compute_optimal_plans(params, settings)
     for n in 1:maxit
         # compute derivatives by FD and BD
         dv = diff(vs) ./ Δk
-        dv_f = [dv; NaN] # forward difference
-        dv_b = [NaN; dv] # backward difference
+        dv_f = [dv; dv[end]] # forward difference
+        dv_b = [dv[1]; dv] # backward difference
         dv_0 = u_prime.(f.(ks, fill(c_ss, P)))
 
         # define the corresponding drifts
@@ -133,19 +134,29 @@ function compute_optimal_plans(params, settings)
         # check termination condition 
         if (maximum(abs.(vs-vs_new)) < threshold)
             if (verbose) println("Value function converged -- total number of iterations: $n") end
-            return (vs = vs, cs = cs)
+            return (vs = vs, cs = cs, vs_history = vs_history) 
         end
         
         # update vs_{n+1}
         vs = vs_new
+        vs_history[:,n] = vs
     end
-    return (vs = vs, cs = cs) 
+    return (vs = vs, cs = cs, vs_history = vs_history) 
 end
 ```
 
 ## Solve
 ```julia
-vs, cs = @btime compute_optimal_plans(params, settings)
+vs, cs, vs_history = @btime compute_optimal_plans(params, settings)
+```
+
+Plot for `v_n(k)` path by `n` (iteration step):
+
+```julia
+plot(ks, vs_history[:,1:3],
+    linewidth = 3,
+    title="Value function per iteration step v_n(k)",xaxis="k",yaxis="v(k)",
+    label = string.("v_",1:3))
 ```
 
 ## Plots
