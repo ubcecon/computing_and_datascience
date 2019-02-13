@@ -148,7 +148,7 @@ Thus, the corresponding discretized differential operator $L_1^{-}$, $L_1^{+}$, 
 
 \begin{align}
 L_1^{-} &\equiv \begin{pmatrix}
-\Delta^{-1}_{1,-} [1 - (1 + \xi \Delta^{-1}_{1,-})] &0&0&\dots&0&0&0\\
+\Delta^{-1}_{1,-} [1 - (1 + \xi \Delta_{1,-})] &0&0&\dots&0&0&0\\
 -\Delta_{2,-}^{-1}&\Delta_{2,-}^{-1}&0&\dots&0&0&0\\
 \vdots&\vdots&\vdots&\ddots&\vdots&\vdots&\vdots\\
 0&0&0&\dots&-\Delta_{P-1,-}^{-1}&\Delta_{P-1,-}^{-1}&0\\
@@ -159,7 +159,7 @@ L_1^{-} &\equiv \begin{pmatrix}
 0&-\Delta_{2,+}^{-1}&\Delta_{2,+}^{-1}&\dots&0&0&0\\
 \vdots&\vdots&\vdots&\ddots&\vdots&\vdots&\vdots\\
 0&0&0&\cdots&0&-\Delta_{P-1,+}^{-1}&\Delta_{P-1,+}^{-1}\\
-0&0&0&\dots&0&0&\Delta_{P,+}^{-1}  [-1 + (1 - \xi \Delta^{-1}_{P,+})]  \\
+0&0&0&\dots&0&0&\Delta_{P,+}^{-1}  [-1 + (1 - \xi \Delta_{P,+})]  \\
 \end{pmatrix}_{P\times P}\label{eq:L-1-plus} \\
 L_2 &\equiv \begin{psmallmatrix}
 \Delta_{1,+}^{-2}[-2 + (1+\xi \Delta_{1,+})] &\Delta_{1,+}^{-2}&0&\cdots&0&0&0 \\
