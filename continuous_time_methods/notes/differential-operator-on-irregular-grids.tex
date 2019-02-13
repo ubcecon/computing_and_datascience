@@ -261,18 +261,18 @@ For notational brevity, for vectors with the same size, $x_1, x_2$, define $x_1 
 \begin{align}
 L_1^{-} &= \text{diag}(\Delta_{-} )^{-1} U_1^{-} - B_1 \\
 L_1^{+} &= \text{diag}(\Delta_{+} )^{-1} U_1^{+} + B_P \\
-L_2 &= \text{diag} \left[ \frac{1}{2} ( \Delta_+ + \Delta_- ) \Delta_+ \right]^{-1}  U_2^{+} - 
- \text{diag} \left[ \frac{1}{2} ( \Delta_+ + \Delta_- ) \Delta_- \right]^{-1}  U_2^{-} 
+L_2 &= \text{diag} \left[ \frac{1}{2} ( \Delta_+ + \Delta_- ) \Delta_+ \right]^{-1}  U_1^{+} - 
+ \text{diag} \left[ \frac{1}{2} ( \Delta_+ + \Delta_- ) \Delta_- \right]^{-1}  U_1^{-} 
 + B_1 + B_P 
 \end{align}
 We can simplify this expression further by introducing a new notation. Let $x^{-1}$ be defined as the elementwise inverse of a vector $x$ that contains no zero element. Then, $L_2$ can be represented as
 \begin{align}
 L_2 &=
-2\left[ \text{diag} \left( ( \Delta_+ + \Delta_- )^{-1} \Delta_+^{-1} \right) U_2^{+} - 
-\text{diag} \left( ( \Delta_+ + \Delta_- )^{-1} \Delta_-^{-1} \right) U_2^{-}  \right]
+2\left[ \text{diag} \left( ( \Delta_+ + \Delta_- )^{-1} \Delta_+^{-1} \right) U_1^{+} - 
+\text{diag} \left( ( \Delta_+ + \Delta_- )^{-1} \Delta_-^{-1} \right) U_1^{-}  \right]
 + B_1 + B_P \\ \label{eq:L-2-by-basis}
-&= 2 \text{diag} \left( ( \Delta_+ + \Delta_- )^{-1} \right) \left[ \text{diag} \left(  \Delta_+^{-1} \right) U_2^{+} - 
-\text{diag} \left(  \Delta_-^{-1} \right) U_2^{-}  \right]
+&= 2 \text{diag} \left( ( \Delta_+ + \Delta_- )^{-1} \right) \left[ \text{diag} \left(  \Delta_+^{-1} \right) U_1^{+} - 
+\text{diag} \left(  \Delta_-^{-1} \right) U_1^{-}  \right]
 + B_1 + B_P
 \end{align}
 
