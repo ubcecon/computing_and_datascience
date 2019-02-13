@@ -221,6 +221,7 @@ For regular grids with the uniform distance of $\Delta > 0$, \eqref{eq:L-1-regul
 
 \begin{align}
 L_1^{-} &= \dfrac{1}{\Delta} U_1^{-} - B_1 \\
+L_1^{+} &= \dfrac{1}{\Delta} U_1^{+} + B_P \\
 L_2 &= \dfrac{1}{\Delta^2} U_2 + B_1 + B_P
 \end{align}
 
@@ -259,6 +260,7 @@ U_2^+ &\equiv \begin{pmatrix}
 For notational brevity, for vectors with the same size, $x_1, x_2$, define $x_1 x_2$ as the elementwise-multiplied vector. Then, we have
 \begin{align}
 L_1^{-} &= \text{diag}(\Delta_{-} )^{-1} U_1^{-} - B_1 \\
+L_1^{+} &= \text{diag}(\Delta_{+} )^{-1} U_1^{+} + B_P \\
 L_2 &= \text{diag} \left[ \frac{1}{2} ( \Delta_+ + \Delta_- ) \Delta_+ \right]^{-1}  U_2^{+} - 
  \text{diag} \left[ \frac{1}{2} ( \Delta_+ + \Delta_- ) \Delta_- \right]^{-1}  U_2^{-} 
 + B_1 + B_P 
