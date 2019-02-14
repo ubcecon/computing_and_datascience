@@ -188,13 +188,6 @@ U_1^{+} &\equiv \begin{pmatrix}
 0&0&0&\dots&0&-1&1\\
 0&0&0&\cdots&0&0&-1
 \end{pmatrix}_{P\times P}\label{eq:L-1+-basis} \\
-U_2 &\equiv \begin{pmatrix}
--2 &1&0&\dots&0&0&0\\
-1&-2&1&\dots&0&0&0\\
-\vdots&\vdots&\vdots&\ddots&\vdots&\vdots&\vdots\\
-0&0&0&\dots&1&-2&1\\
-0&0&0&\cdots&0&1&-2 
-\end{pmatrix}_{P\times P}\label{eq:L-2-basis}
 \end{align}
 
 and the boundary conditions for the reflecting conditions:
@@ -222,11 +215,6 @@ For regular grids with the uniform distance of $\Delta > 0$, \eqref{eq:L-1-regul
 \begin{align}
 L_1^{-} &= \dfrac{1}{\Delta} U_1^{-} - B_1 \\
 L_1^{+} &= \dfrac{1}{\Delta} U_1^{+} + B_P \\
-L_2 &= \dfrac{1}{\Delta^2} U_2 + B_1 + B_P
-\end{align}
-
-Note that $U_2 = U_1^+ - U_1^-$. Hence, $L_2$ can be also represented as
-\begin{align}
 L_2 &= \dfrac{1}{\Delta^2} (U_1^+ - U_1^-) + B_1 + B_P
 \end{align}
 
