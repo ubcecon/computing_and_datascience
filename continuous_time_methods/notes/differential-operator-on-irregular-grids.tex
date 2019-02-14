@@ -68,27 +68,31 @@ v''(z_i) \approx \dfrac{ \Delta_{i,-} v( z_i + \Delta_{i,+}) - (\Delta_{i,+} + \
 \subsection{Regular grids}
 Suppose that the grids are regular, i.e., elements of $\text{diff}(z)$ are all identical with $\Delta$ for some $\Delta > 0$.
 
-Using the backwards first-order difference, \eqref{eq:new-BC1} can be alternatively represented as
+Using the backwards first-order difference, \eqref{eq:new-BC1} implies
 \begin{align}
 \dfrac{v(\underline{z}) - v(-\Delta)}{\Delta} &= - \xi v(\underline{z})
 \end{align}
+at the lower bound.
+
 Likewise, \eqref{eq:new-BC2} under the forwards first-order difference yields
 \begin{align}
 \dfrac{v(\overline{z} + \Delta) - v(\overline{z})}{\Delta} &= - \xi v(\overline{z})
 \end{align}
+at the upper bound.
 
-Using discretized central differences of second orders, \eqref{eq:new-BC1} can be shown as
+The discretized central difference of second order under \eqref{eq:new-BC1} at the lower bound is
 \begin{align}
 \dfrac{v (\underline{z} + \Delta) - 2 v(\underline{z}) + v(\underline{z}-\Delta)}{\Delta^2} &=   \dfrac{v(\underline{z} + \Delta) - v(\underline{z})}{\Delta^2} - \dfrac{1}{\Delta}\dfrac{v (\underline{z}) - v(\underline{z}-\Delta) }{\Delta}  \\
 &= \dfrac{v(\underline{z} + \Delta) - v(\underline{z})}{\Delta^2} + \dfrac{1}{\Delta} \xi v(\underline{z})  \\ 
 &= \dfrac{1}{\Delta^2}  (- 1 + \Delta \xi) v(\underline{z})  + \dfrac{1}{\Delta^2}  v(\underline{z} + \Delta)  
 \end{align}
-Similarly, for \eqref{eq:new-BC2}, we have
+Similarly, by \eqref{eq:new-BC2}, we have
 \begin{align}
 \dfrac{v (\bar{z} + \Delta) - 2 v(\bar{z} ) + v(\bar{z} -\Delta)}{\Delta^2} &=   \dfrac{v(\bar{z} - \Delta) - v(\bar{z})}{\Delta^2} + \dfrac{1}{\Delta}\dfrac{ v(\bar{z}+\Delta) - v (\bar{z}) }{\Delta}  \\
 &= \dfrac{v(\bar{z} - \Delta) - v(\bar{z})}{\Delta^2}  - \dfrac{1}{\Delta} \xi v(\bar{z})  \\ 
 &= \dfrac{1}{\Delta^2}  (- 1 - \Delta \xi) v(\bar{z})  + \dfrac{1}{\Delta^2}  v(\bar{z} - \Delta)  
 \end{align}
+at the upper bound.
 
 Thus, the corresponding discretized differential operator $L_1^{-}$, $L_1^{+}$, and $L_2$ are defined as 
 
@@ -117,17 +121,18 @@ L_2 &\equiv \frac{1}{\Delta^2}\begin{pmatrix}
 \end{align}
 
 \subsection{Irregular grids}
-Using the backwards first-order difference, \eqref{eq:new-BC1} can be alternatively represented as
+Using the backwards first-order difference, \eqref{eq:new-BC1} implies
 \begin{align}
 \dfrac{v(\underline{z}) - v(\underline{z}-\Delta_{1, -})}{\Delta_{1, -}} &= - \xi v(\underline{z})
 \end{align}
 
-Likewise, the forwards first-order difference under \eqref{eq:new-BC2} yields
+at the lower bound. Likewise, the forwards first-order difference under \eqref{eq:new-BC2} yields
 \begin{align}
 \dfrac{v(\overline{z} + \Delta_{P, +}) - v( \overline{z})}{\Delta_{P, +}} &= - \xi v(\overline{z})
 \end{align}
+at the upper bound.
 
-Note that we have assumed that $\Delta_{1,-} = \Delta_{1,+}$ and $\Delta_{P,+} = \Delta_{P,-}$ for the ghost notes. Using discretized central differences of second orders, \eqref{eq:new-BC1} can be shown as
+Note that we have assumed that $\Delta_{1,-} = \Delta_{1,+}$ and $\Delta_{P,+} = \Delta_{P,-}$ for the ghost notes. The discretized central difference of second order scheme at the lower bound under \eqref{eq:new-BC1} is 
 \begin{align}
 &\dfrac{\Delta_{1,-} v( \underline{z} + \Delta_{1,+}) - (\Delta_{1,+} + \Delta_{1,-}) v(\underline{z}) + \Delta_{1,+}  v( \underline{z} - \Delta_{1,-})}{\frac{1}{2}(\Delta_{1,+} + \Delta_{1,-}) \Delta_{1,+} \Delta_{1,-} } \\
 &=
@@ -136,7 +141,7 @@ Note that we have assumed that $\Delta_{1,-} = \Delta_{1,+}$ and $\Delta_{P,+} =
 &= \dfrac{v(\underline{z} + \Delta_{1, +}) - v(\underline{z})}{\Delta_{1, +}^2} + \dfrac{1}{\Delta_{i,+}} \xi v(\underline{z})  \\ 
 &= \dfrac{1}{\Delta_{1, +}^2}  (- 1 + \Delta_{1, +} \xi) v(\underline{z})  + \dfrac{1}{\Delta_{1, +}^2}  v(\underline{z} + \Delta_{1, +})  
 \end{align}
-Similarly, for \eqref{eq:new-BC2}, we have
+Similarly, by \eqref{eq:new-BC2}, we have
 \begin{align}
 &\dfrac{\Delta_{P,-} v( \bar{z} + \Delta_{P,+}) - (\Delta_{P,+} + \Delta_{P,-}) v(\bar{z} ) + \Delta_{P,+}  v( \bar{z} - \Delta_{P,-})}{\frac{1}{2}(\Delta_{P,+} + \Delta_{P,-}) \Delta_{P,+} \Delta_{P,-} } \\
 &=\dfrac{v (\bar{z} + \Delta_{P,-}) - 2 v(\bar{z} ) + v(\bar{z} -\Delta_{P,-})}{\Delta_{P,-}^2} \\
@@ -144,6 +149,7 @@ Similarly, for \eqref{eq:new-BC2}, we have
 &= \dfrac{v(\bar{z} - \Delta_{P,-}) - v(\bar{z})}{\Delta_{P,-}^2}  - \dfrac{1}{\Delta_{P,-}} \xi v(\bar{z})  \\ 
 &= \dfrac{1}{\Delta_{P,-}^2}  (- 1 - \Delta_{P,-} \xi) v(\bar{z})  + \dfrac{1}{\Delta_{P,-}^2}  v(\bar{z} - \Delta_{P,-})  
 \end{align}
+at the upper bound.
 
 Thus, the corresponding discretized differential operator $L_1^{-}$, $L_1^{+}$, and $L_2$ are defined as 
 
