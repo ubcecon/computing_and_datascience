@@ -1,7 +1,7 @@
 ---
 title       : "Solving HJB equation for neoclassical growth models"
 author      : Chiyoung Ahn (@chiyahn)
-date        : 2019-01-30
+date        : 2019-02-27
 ---
 
 ### About this document
@@ -20,11 +20,15 @@ gr(fmt = :png); # save plots in .png
 ## Model
 Consider finding the optimal consumption plan $c(t)$ for
 
-$$\max_{\{c(t)\}_{t \geq 0} } \int e^{-\rho t } u(c(t)) dt$$
+$$
+\max_{\{c(t)\}_{t \geq 0} } \int e^{-\rho t } u(c(t)) dt
+$$
 
 with $u(c(t)) = c(t)^{1-\gamma} / (1-\gamma)$ for some $\gamma \neq 1$ and the following law of motion for $k$:
 
-$$\dot k(t) = F(k(t)) - \delta k(t) - c(t)$$
+$$
+\dot k(t) = F(k(t)) - \delta k(t) - c(t)
+$$
 
 ## Setup
 ### Utility function
@@ -187,7 +191,7 @@ vs, cs, vs_history = @btime compute_optimal_plans(params, settings)
 
 
 ~~~~
-107.524 ms (3821333 allocations: 89.93 MiB)
+103.572 ms (3821317 allocations: 89.93 MiB)
 ~~~~
 
 
