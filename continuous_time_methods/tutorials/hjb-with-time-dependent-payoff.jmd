@@ -19,7 +19,7 @@ $$
 \rho v(x, t) = r(x, t) + \mu \partial_x v(x, t) + \frac{\sigma^2}{2} \partial_{xx} v(x, t) + \partial_{t} v(x, t)
 $$
 
-with $r(x,t) = x \exp(-t) $ for some constant $\mu < 0$, $\sigma > 0$ under boundary conditions in time dimension that $v(x, T) = 0$ for all $x \in [0, 1]$. 
+with $r(x,t) = x \exp(-t) $ for some constant $\mu < 0$, $\sigma > 0$ under boundary conditions in time dimension that $v_t(x, T) = 0$ for all $x \in [0, 1]$. 
 Also, we impose reflecting barrier conditions boundary in state dimension, i.e., $v'(0,t) = v'(1,t)$ for all $t \in [0, T]$. 
 
 # Setup
@@ -40,6 +40,12 @@ bc = (Reflecting(), Reflecting()) # boundary condition (reflecting barrier)
 params = (μ = μ, σ = σ, ρ = ρ, x = x, bc = bc) # group them as a tuple
 ```
 
+## Find `v` at `T`
+```julia
+L = μ*L₁₋(x, bc) + (σ^2 / 2) * L₂(x, bc)
+vT = (I * ρ - L) \ r.(x,T); # v(x,T) under BC that v_t(x,T) = 0
+```
+
 ## Define `dv` (partial derivative of `v` with respect to time)
 ```julia
 function dv!(dv, v, params, t) 
@@ -52,8 +58,7 @@ end
 
 ## Define the corresponding ODE problem
 ```julia
-dv0 = zeros(M) # defines v(x,0) for BC in time dimension
-prob = ODEProblem(dv!,dv0,(T, 0.0),params)
+prob = ODEProblem(dv!,vT,(T, 0.0),params)
 ```
 
 # Results
