@@ -20,11 +20,11 @@ gr(fmt = :png); # save plots in .png
 Consider solving $v(x,t)$ from the following PDE
 
 $$
-\rho v(x, t) = r(x, t) + \mu \partial_x v(x, t) + \frac{\sigma^2}{2} \partial_{xx} v(x, t) + \partial_{t} v(x, t)
+\rho v(x, t) = r(x, t) + \mu \partial_{x} v(x, t) + \frac{\sigma^2}{2} \partial_{xx} v(x, t) + \partial_{t} v(x, t)
 $$
 
-with $r(x,t) = x \exp(-t) $ for some constant $\mu < 0$, $\sigma > 0$ under boundary conditions in time dimension that $v_t(x, T) = 0$ for all $x \in [0, 1]$. 
-Also, we impose reflecting barrier conditions boundary in state dimension, i.e., $v'(0,t) = v'(1,t)$ for all $t \in [0, T]$. 
+with $r(x,t) = x \exp(-t)$ for some constant $\mu < 0$, $\sigma > 0$ under boundary conditions in time dimension that $\partial_{t} v(x, T) = 0$ for all $x \in [0, 1]$. 
+Also, we impose reflecting barrier conditions boundary in state dimension, i.e., $\partial_{x} v(0,t) = \partial_{x} v(1,t)$ for all $t \in [0, T]$. 
 
 # Setup
 ## Payoff function
