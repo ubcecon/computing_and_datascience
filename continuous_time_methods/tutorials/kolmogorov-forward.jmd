@@ -1,0 +1,70 @@
+---
+title       : "Dynamics of distributions under diffusion process using KFE"
+author      : Chiyoung Ahn (@chiyahn)
+date        : `j using Dates; print(Dates.today())`
+---
+
+### About this document
+Presented by Chiyoung Ahn (@chiyahn), written with `Weave.jl`.
+
+```julia; cache=true
+using SimpleDifferentialOperators, LinearAlgebra, Parameters, Plots, BenchmarkTools, NLsolve
+gr(fmt = :png); # save plots in .png
+```
+
+## Model
+Consider the following diffusion process:
+
+$$
+dx = \mu dt + \sigma dW
+$$
+
+Let $f(x,t)$ be the density of $x$ at time $t$. Given an initial distribution of $f_0(x) = f_0(x,t)$, $f$ satisfies the following PDE by the Kolmogorov Forward Equation:
+
+$$
+\partial_{t} f(x,t) = - \mu \partial_{x} f(x,t) + \frac{1}{2} \sigma^2  \partial_{x x} f(x,t)
+$$
+
+## Setup
+### Model
+```julia
+μ = -0.1 # constant negative drift
+σ = 0.1
+M = 100 # size of grid
+x = range(-5.0, 5.0, length = M) # grid
+bc = (Reflecting(), Reflecting())
+```
+
+### Initial distribution 
+```julia
+# Define initial distribution of `x` at time 0
+f_0(x) = exp(-x^2/2) / sqrt(2*π) 
+```
+
+### Corresponding operator
+```julia
+L_HJBE = μ*L₁₋(x, bc) + (σ^2 / 2) * L₂(x, bc) # HJBE operator
+L_KFE = transpose(L_HJBE)
+```
+
+## Solve
+### Find stationary distribution
+```julia
+# Find stationary dsitribution, i.e., 
+# find f such that Lf = 0, where sum of `f` is 1
+
+function f!(F, x)
+    F[:] = L_KFE*x
+end
+
+result = nlsolve(f!, f_0.(x));
+f_stationary = result.zero / sum(result.zero); # stationary distribution found
+```
+
+Confirm `Lf = 0` holds:
+
+```julia
+@show L_KFE * f_stationary
+```
+
+
