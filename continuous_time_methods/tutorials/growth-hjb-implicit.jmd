@@ -44,7 +44,7 @@ i.e., $c = (u')^{-1} (v' (k))$ for each $k$ at optimal.
 ### Upwind scheme and discretization of $\nabla v$
 Note that $v$ is concave in $k$ and the drift of state variables can be either positive or negative. Basic idea of upwind scheme: use forward difference when the drift of the state variable $f(x, \alpha)$ is positive, backward difference when it is negative. Let $v'_{i, B}$ and $v'_{i, F}$ be $v'$ computed from backward difference and forward difference respectively.
 
-Define the followings:
+Define the following variables that represent drifts computed from the forward-difference and backward-difference based derivative of `v` respectively:
 
 $$
 s_{i,F} = F(k_i) - \delta k_i - (u')^{-1} (v'_{i,F}) \\
@@ -57,7 +57,7 @@ $$
 \rho v_i = u(c_i) + \dfrac{v_{i+1} - v_i}{\Delta k} s^+_{i,F} + \dfrac{v_i - v_{i-1}}{\Delta k} s^-_{i, B}
 $$
 
-for each $i$. This can be written in a compact matrix form
+for each $i$, where $s^+_{i,F} = \max (s_{i,F}, 0)$ and $s^-_{i,B} = \min (s_{i,B}, 0)$. This can be written in a compact matrix form
 
 $$
 \rho {\mathbf{v}} = {\mathbf{u}} + {\mathbf{A}}({\mathbf{v}}) {\mathbf{v}}
@@ -187,15 +187,18 @@ function compute_optimal_plans(params, settings)
         drift_b[1] = 0.0
 
         # compute consumptions and corresponding u(v)
+        ## indicator -- check which direction to be used
         I_f = drift_f .> 0.0
         I_b = drift_b .< 0.0
-        I_0 = 1 .- I_f-I_b
-
+        I_0 = 1 .- I_f - I_b
+        ## find v' according to the optimal plan
         dv_upwind = dv_f.*I_f + dv_b.*I_b 
+        ## find c according to v' by the optimal plan
         cs_upwind = c.(dv_upwind)
         cs_0 = f.(ks, 0.0) # this gives consumption when the state is zero
         cs = cs_upwind.*I_f + cs_upwind.*I_b + cs_0.*I_0;
-        
+
+        # compute utility according to the optimal consumption plan
         us = u.(cs)
 
         # define the matrix A
