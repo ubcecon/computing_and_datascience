@@ -68,7 +68,7 @@ f_ss = result.zero / sum(result.zero); # stationary distribution found
 Confirm `Lf = 0` holds:
 
 ```julia
-@show L_KFE * f_ss
+@test L_KFE * f_ss ≈ zeros(length(x)) atol = 1e-5
 ```
 
 
