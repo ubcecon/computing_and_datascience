@@ -196,11 +196,12 @@ function compute_optimal_plans(params, settings)
     vs_history = zeros(P, maxit)
     # save control (consumption) plan as well
     cs = zeros(P) 
+    ops = (L₁₊ = L₁₊(ks, bc), L₁₋ = L₁₋(ks, bc))
 
     # begin iterations
     for n in 1:maxit
-        dv_f = L₁₊(ks, bc) * vs # v' by forward difference
-        dv_b = L₁₋(ks, bc) * vs # v' by backward difference
+        dv_f = ops.L₁₊ * vs # v' by forward difference
+        dv_b = ops.L₁₋ * vs # v' by backward difference
 
         # define the corresponding drifts
         drift_f = f.(ks, c.(dv_f)) 
@@ -226,7 +227,7 @@ function compute_optimal_plans(params, settings)
         us = u.(cs)
 
         # define the matrix A
-        A = Tridiagonal(max.(drift_f, 0.0) .* L₁₊(ks, bc) + min.(drift_b, 0.0) .* L₁₋(ks, bc))
+        A = Tridiagonal(Diagonal(max.(drift_f, 0.0)) * ops.L₁₊ + Diagonal(min.(drift_b, 0.0)) * ops.L₁₋)
 
         # solve the corresponding system to get vs_{n+1}
         vs_new = (Diagonal(fill((ρ + 1/Δv), P)) - A) \ (us + vs / Δv)
@@ -264,7 +265,7 @@ vs, cs, vs_history = @btime compute_optimal_plans(params, settings);
 
 
 ~~~~
-11.608 s (3581341 allocations: 17.98 GiB)
+13.055 s (3582371 allocations: 120.63 MiB)
 ~~~~
 
 
