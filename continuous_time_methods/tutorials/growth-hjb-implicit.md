@@ -228,11 +228,7 @@ function compute_optimal_plans(params, settings)
         us = u.(cs)
 
         # define the matrix A
-        drift_f_upwind = max.(drift_f, 0.0) ./ Δk
-        drift_b_upwind = min.(drift_b, 0.0) ./ Δk
-        A = LinearAlgebra.Tridiagonal(-drift_b_upwind[2:P], 
-                (-drift_f_upwind + drift_b_upwind), 
-                drift_f_upwind[1:(P-1)]) 
+        A = Tridiagonal(max.(drift_f, 0.0) .* L₁₊(ks, bc) + min.(drift_b, 0.0) .* L₁₋(ks, bc))
 
         # solve the corresponding system to get vs_{n+1}
         vs_new = (Diagonal(fill((ρ + 1/Δv), P)) - A) \ (us + vs / Δv)
@@ -270,7 +266,7 @@ vs, cs, vs_history = @btime compute_optimal_plans(params, settings);
 
 
 ~~~~
-96.406 ms (3581133 allocations: 94.81 MiB)
+11.608 s (3581341 allocations: 17.98 GiB)
 ~~~~
 
 
