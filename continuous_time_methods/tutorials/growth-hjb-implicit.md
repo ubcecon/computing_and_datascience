@@ -67,15 +67,13 @@ $$
 \rho {\mathbf{v}} = {\mathbf{u}} + {\mathbf{A}}({\mathbf{v}}) {\mathbf{v}}
 $$
 
-such that the $i$th row of ${\mathbf{A}}({\mathbf{v}})$ is defined as 
+such that ${\mathbf{A}}({\mathbf{v}})$ is defined as 
 
 $$
-\begin{bmatrix}
-0 & \cdots & 0 &  - \dfrac{s^-_{i,B}}{\Delta k} & \dfrac{s^-_{i,B}}{\Delta k} - \dfrac{s^-_{i,F}}{\Delta k} & \dfrac{s^-_{i,F}}{\Delta k} & 0 & \cdots & 0
-\end{bmatrix}
+\mathrm{diag} (s^+_{F}) \mathbf{L_{1+}} +  \mathrm{diag} (s^-_{B}) \mathbf{L_{1-}}
 $$
 
-where the non-zero elements above are located in $i-1, i, i+1$th columns respectively. 
+where $L_{1+}$ and $L_{1-}$ are discretized differential operators for forward-difference and backward-difference first order derivatives, and $s^+_{F}$ and $s^-_{B}$ are vectors whose $i$th elements are $s^+_{i,F}$ and $s^-_{i,B}$, respectively.
 
 ### Discretization of $u(c)$
 One thing left to find is ${\mathbf{u}}$ at optimal consumption plan $c$. 
