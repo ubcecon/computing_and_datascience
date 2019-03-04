@@ -1,7 +1,7 @@
 ---
 title       : "Solving HJB equation for neoclassical growth models"
 author      : Chiyoung Ahn (@chiyahn)
-date        : 2019-02-27
+date        : 2019-03-04
 ---
 
 ### About this document
@@ -75,7 +75,7 @@ $$
 \end{bmatrix}
 $$
 
-where the non-zero elements above are located in $i-1, i, i+1$th columns respectively.  s
+where the non-zero elements above are located in $i-1, i, i+1$th columns respectively. 
 
 ### Discretization of $u(c)$
 One thing left to find is ${\mathbf{u}}$ at optimal consumption plan $c$. 
@@ -182,84 +182,7 @@ settings = (ks = ks,
 
 
 
-### Optimal plan solver, using the methods from [Achdou et al. (2017)](http://www.princeton.edu/~moll/HACT.pdf) and [Fernandez-Villaverde et al. (2018)](https://www.sas.upenn.edu/~jesusfv/Financial_Frictions_Wealth_Distribution.pdf)
-~~~~{.julia}
-function compute_optimal_plans(params, settings)
-    @unpack ρ, δ, γ, F, u, u_prime, f, c, c_ss = params
-    @unpack ks, Δv, vs0, maxit, threshold, verbose = settings
-
-    P = length(ks) # size of grids
-    Δk = ks[2] - ks[1] # assume uniform grids
-
-    # initial guess
-    vs = vs0; 
-    vs_history = zeros(P, maxit)
-    # save control (consumption) plan as well
-    cs = zeros(P) 
-
-    # begin iterations
-    for n in 1:maxit
-        # compute derivatives by FD and BD
-        dv = diff(vs) ./ Δk
-        dv_f = [dv; dv[end]] # forward difference
-        dv_b = [dv[1]; dv] # backward difference
-        dv_0 = u_prime.(f.(ks, fill(c_ss, P)))
-
-        # define the corresponding drifts
-        drift_f = f.(ks, c.(dv_f)) 
-        drift_b = f.(ks, c.(dv_b))
-
-        # steady states at boundary
-        drift_f[end] = 0.0
-        drift_b[1] = 0.0
-
-        # compute consumptions and corresponding u(v)
-        I_f = drift_f .> 0.0
-        I_b = drift_b .< 0.0
-        I_0 = 1 .- I_f-I_b
-
-        dv_upwind = dv_f.*I_f + dv_b.*I_b + dv_0.*I_0;
-        cs = c.(dv_upwind)
-        us = u.(cs)
-
-        # define the matrix A
-        drift_f_upwind = max.(drift_f, 0.0) ./ Δk
-        drift_b_upwind = min.(drift_b, 0.0) ./ Δk
-        A = LinearAlgebra.Tridiagonal(-drift_b_upwind[2:P], 
-                (-drift_f_upwind + drift_b_upwind), 
-                drift_f_upwind[1:(P-1)]) 
-
-        # solve the corresponding system to get vs_{n+1}
-        vs_new = (Diagonal(fill((ρ + 1/Δv), P)) - A) \ (us + vs / Δv)
-
-        # show distance between vs_{n+1} and vs_n if verbose option is one
-        if (verbose) @show maximum(abs.(vs - vs_new)) end
-        
-        # check termination condition 
-        if (maximum(abs.(vs-vs_new)) < threshold)
-            if (verbose) println("Value function converged -- total number of iterations: $n") end
-            return (vs = vs, cs = cs, vs_history = vs_history) 
-        end
-        
-        # update vs_{n+1}
-        vs = vs_new
-        vs_history[:,n] = vs
-    end
-    return (vs = vs, cs = cs, vs_history = vs_history) 
-end
-~~~~~~~~~~~~~
-
-
-~~~~
-compute_optimal_plans (generic function with 1 method)
-~~~~
-
-
-
-
-
-
-### Optimal plan solver, using my new method
+### Optimal plan solver
 ~~~~{.julia}
 function compute_optimal_plans(params, settings)
     @unpack ρ, δ, γ, F, u, u_prime, f, c, c_ss = params
@@ -344,7 +267,7 @@ vs, cs, vs_history = @btime compute_optimal_plans(params, settings)
 
 
 ~~~~
-93.904 ms (3581357 allocations: 87.49 MiB)
+94.015 ms (3581357 allocations: 87.49 MiB)
 ~~~~
 
 
@@ -361,7 +284,7 @@ plot(ks, vs_history[:,1:3],
 ~~~~~~~~~~~~~
 
 
-![](figures/growth-hjb-implicit_11_1.png)\ 
+![](figures/growth-hjb-implicit_10_1.png)\ 
 
 
 
@@ -375,7 +298,7 @@ plot(ks, vs,
 ~~~~~~~~~~~~~
 
 
-![](figures/growth-hjb-implicit_12_1.png)\ 
+![](figures/growth-hjb-implicit_11_1.png)\ 
 
 
 
@@ -388,7 +311,7 @@ plot(ks, cs,
 ~~~~~~~~~~~~~
 
 
-![](figures/growth-hjb-implicit_13_1.png)\ 
+![](figures/growth-hjb-implicit_12_1.png)\ 
 
 
 
@@ -403,5 +326,5 @@ plot!([.0], st = :hline, linestyle = :dot, lw = 3) # zero saving line
 ~~~~~~~~~~~~~
 
 
-![](figures/growth-hjb-implicit_14_1.png)\ 
+![](figures/growth-hjb-implicit_13_1.png)\ 
 
