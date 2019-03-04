@@ -1,0 +1,79 @@
+---
+title       : "HJB equation with time-dependent payoff functions"
+author      : Chiyoung Ahn (@chiyahn)
+date        : `j using Dates; print(Dates.today())`
+---
+
+## About this document
+Presented by Chiyoung Ahn (@chiyahn), written with `Weave.jl`.
+
+```julia; cache=true
+using LinearAlgebra, Parameters, Plots, DifferentialEquations, SimpleDifferentialOperators
+gr(fmt = :png); # save plots in .png
+```
+
+# Model
+Consider solving $v(x,t)$ from the following PDE
+
+$$
+\rho v(x, t) = r(x, t) + \mu \partial_{x} v(x, t) + \frac{\sigma^2}{2} \partial_{xx} v(x, t) + \partial_{t} v(x, t)
+$$
+
+with $r(x,t) = x \exp(-t)$ for some constant $\mu < 0$, $\sigma > 0$ under boundary conditions in time dimension that $\partial_{t} v(x, T) = 0$ for all $x \in [0, 1]$. 
+Also, we impose reflecting barrier conditions boundary in state dimension, i.e., $\partial_{x} v(0,t) = \partial_{x} v(1,t)$ for all $t \in [0, T]$. 
+
+# Setup
+## Payoff function
+```julia
+r(x,t) = x*exp(-t)
+```
+
+## Parameters
+```julia
+T = 1.0 # terminal time
+μ = -0.1 # constant negative drift
+σ = 0.1
+ρ = 0.05
+M = 20 # size of grid
+x = range(0.0, 1.0, length = M) # grid
+bc = (Reflecting(), Reflecting()) # boundary condition (reflecting barrier)
+params = (μ = μ, σ = σ, ρ = ρ, x = x, bc = bc) # group them as a tuple
+```
+
+## Find `v` at `T`
+```julia
+L = μ*L₁₋(x, bc) + (σ^2 / 2) * L₂(x, bc)
+vT = (I * ρ - L) \ r.(x,T); # v(x,T) under BC that v_t(x,T) = 0
+```
+
+## Define `dv` (partial derivative of `v` with respect to time)
+```julia
+function dv!(dv, v, params, t) 
+    μ, σ, ρ, x, bc = params 
+    # define discretized composition of differential operators w.r.t. x
+    L = μ*L₁₋(x, bc) + (σ^2 / 2) * L₂(x, bc)
+    dv[:] = (I * ρ - L) * v - r.(x,t)
+end
+```
+
+## Define the corresponding ODE problem
+```julia
+prob = ODEProblem(dv!,vT,(T, 0.0),params)
+```
+
+# Results
+## Compute the solution 
+```julia
+v = solve(prob)
+@show v(0) # display v at time t = 0
+```
+
+## Plots
+```julia
+v_x0(t) = v(t)[1]
+v_x1(t) = v(t)[end]
+ts = range(0, T, length = 10)
+plot(range(0, T, length = 10), [v_x0; v_x1],  
+    label = ["v(0,t)", "v(1,t)"] ,
+    title = "v(x,t)", lw = 3)
+```
