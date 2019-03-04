@@ -8,7 +8,7 @@ date        : 2019-03-04
 Presented by Chiyoung Ahn (@chiyahn), written with `Weave.jl`.
 
 ~~~~{.julia}
-using SimpleDifferentialOperators, LinearAlgebra, Parameters, Plots, BenchmarkTools, NLsolve
+using SimpleDifferentialOperators, LinearAlgebra, Plots, NLsolve, DifferentialEquations, Test
 gr(fmt = :png); # save plots in .png
 ~~~~~~~~~~~~~
 
@@ -145,4 +145,59 @@ plot(x, f_ss,
 
 
 ![](figures/kolmogorov-forward_7_1.png)\ 
+
+
+
+
+## Solve the corresponding dynamics
+### Define `df`, time derivative of `f`
+~~~~{.julia}
+# Define df
+function df!(df, f, params, t) 
+    μ, σ, x, bc = params 
+    L_HJBE = μ*L₁₋(x, bc) + (σ^2 / 2) * L₂(x, bc) # HJBE operator
+    L_KFE = transpose(L_HJBE); # KFE operator is adjoint of HJBE
+    
+    # Assign it as df
+    df[:] = L_KFE*f
+end
+~~~~~~~~~~~~~
+
+
+~~~~
+df! (generic function with 1 method)
+~~~~
+
+
+
+
+
+### Define the corresponding ODE
+~~~~{.julia}
+prob = ODEProblem(df!,f0_discretized,(0, T), params);
+~~~~~~~~~~~~~
+
+
+
+
+
+### Solve and plot it
+~~~~{.julia}
+# Solve the DE
+f = solve(prob);
+~~~~~~~~~~~~~
+
+
+
+~~~~{.julia}
+# Generate plot
+plot(x, [f(0.0) f(T/10) f(T/8) f(T/5) f(T/3) f(T/2) f(T) f_ss],  
+    label = ["f(0)", "f(T/10)", "f(T/8)", "f(T/5)", "f(T/3)", "f(T/2)", "f(T)", "f_ss"] ,
+    title = "Dynamics of f(x, t), by t", 
+    linestyle = [:solid :dot :dot :dot :dot :dot :solid :dash], 
+    lw = 3)
+~~~~~~~~~~~~~
+
+
+![](figures/kolmogorov-forward_11_1.png)\ 
 
