@@ -135,3 +135,14 @@ L_KFE * f_ss = [-2.00762e-12, 6.90559e-14, 9.87432e-13, 9.12825e-13, -8.754
 ~~~~
 
 
+
+~~~~{.julia}
+# Plot
+plot(x, f_ss,  
+    label = ["f_ss"] ,
+    title = "Stationary distribution f_ss(x)", lw = 3)
+~~~~~~~~~~~~~
+
+
+![](figures/kolmogorov-forward_7_1.png)
+

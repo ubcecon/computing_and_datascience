@@ -72,3 +72,9 @@ Confirm `Lf = 0` holds:
 ```
 
 
+```julia
+# Plot
+plot(x, f_ss,  
+    label = ["f_ss"] ,
+    title = "Stationary distribution f_ss(x)", lw = 3)
+```
