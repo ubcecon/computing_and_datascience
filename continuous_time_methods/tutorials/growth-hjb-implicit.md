@@ -9,7 +9,7 @@ Presented by Chiyoung Ahn (@chiyahn), written for `Weave.jl`, based on Ben Moll'
 
 
 ~~~~{.julia}
-using LinearAlgebra, Parameters, Plots, BenchmarkTools
+using LinearAlgebra, Parameters, Plots, BenchmarkTools, SimpleDifferentialOperators
 gr(fmt = :png); # save plots in .png
 ~~~~~~~~~~~~~
 
@@ -158,7 +158,9 @@ c(v_prime) = v_prime^(-1/γ); # consumption by derivative of value function at c
 # f: law of motion function that maps k (state), c (control) to the derivative of k
 # c: control by v_prime; maps v_prime (derivative of v at certain k) to consumption (control)
 # c_ss: consumption (control) when v' = 0 (i.e. steady state)
-params = (ρ = 0.05, δ = δ, γ = γ, F = F, u = u, u_prime = u_prime, f = f, c = c, c_ss = 0.0)
+# bc: boundary conditions to be used for v
+params = (ρ = 0.05, δ = δ, γ = γ, F = F, u = u, u_prime = u_prime, f = f, c = c, c_ss = 0.0, 
+        bc = (Reflecting(), Reflecting()))
 ~~~~~~~~~~~~~
 
 
@@ -185,7 +187,7 @@ settings = (ks = ks,
 ### Optimal plan solver
 ~~~~{.julia}
 function compute_optimal_plans(params, settings)
-    @unpack ρ, δ, γ, F, u, u_prime, f, c, c_ss = params
+    @unpack ρ, δ, γ, F, u, u_prime, f, c, c_ss, bc = params
     @unpack ks, Δv, vs0, maxit, threshold, verbose = settings
 
     P = length(ks) # size of grids
@@ -199,10 +201,8 @@ function compute_optimal_plans(params, settings)
 
     # begin iterations
     for n in 1:maxit
-        # compute derivatives by FD and BD
-        dv = diff(vs) ./ Δk
-        dv_f = [dv; dv[end]] # forward difference
-        dv_b = [dv[1]; dv] # backward difference
+        dv_f = L₁₊(ks, bc) * vs # v' by forward difference
+        dv_b = L₁₋(ks, bc) * vs # v' by backward difference
 
         # define the corresponding drifts
         drift_f = f.(ks, c.(dv_f)) 
@@ -217,7 +217,7 @@ function compute_optimal_plans(params, settings)
         I_b = drift_b .< 0.0
         I_0 = 1 .- I_f-I_b
 
-        dv_upwind = dv_f.*I_f + dv_b.*I_b
+        dv_upwind = dv_f.*I_f + dv_b.*I_b 
         cs_upwind = c.(dv_upwind)
         cs_0 = f.(ks, 0.0) # this gives consumption when the state is zero
         cs = cs_upwind.*I_f + cs_upwind.*I_b + cs_0.*I_0;
@@ -262,12 +262,12 @@ compute_optimal_plans (generic function with 1 method)
 
 ## Solve
 ~~~~{.julia}
-vs, cs, vs_history = @btime compute_optimal_plans(params, settings)
+vs, cs, vs_history = @btime compute_optimal_plans(params, settings);
 ~~~~~~~~~~~~~
 
 
 ~~~~
-94.015 ms (3581357 allocations: 87.49 MiB)
+97.029 ms (3581133 allocations: 94.81 MiB)
 ~~~~
 
 
