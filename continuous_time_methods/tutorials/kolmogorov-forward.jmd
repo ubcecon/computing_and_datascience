@@ -51,7 +51,7 @@ L_HJBE = μ*L₁₋(x, bc) + (σ^2 / 2) * L₂(x, bc) # HJBE operator
 L_KFE = transpose(L_HJBE)
 ```
 
-## Find stationary distribution
+## Find the stationary distribution
 ```julia
 # Find stationary distribution
 # Find f such that Lf = 0, where sum of `f` is 1

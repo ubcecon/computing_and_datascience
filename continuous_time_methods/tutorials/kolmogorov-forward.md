@@ -67,7 +67,7 @@ L_KFE = transpose(L_HJBE)
 
 
 
-## Find stationary distribution
+## Find the stationary distribution
 ~~~~{.julia}
 # Find stationary distribution
 # Find f such that Lf = 0, where sum of `f` is 1
@@ -144,5 +144,5 @@ plot(x, f_ss,
 ~~~~~~~~~~~~~
 
 
-![](figures/kolmogorov-forward_7_1.png)
+![](figures/kolmogorov-forward_7_1.png)\ 
 
