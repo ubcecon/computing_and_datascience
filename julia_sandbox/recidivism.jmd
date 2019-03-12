@@ -1,3 +1,4 @@
+```yaml
 ---
 title: Analyzing Recidivism
 author: Arnav Sood (`arnav.sood@ubc.ca`)
@@ -70,90 +71,7 @@ println("Dropped $(nrow(master) - nrow(data)) rows")
 
 The justification here was that these rows mean we don't have data on the correct offense.
 
-## Exploratory Data Analysis (EDA)
-
-At this stage, we can start to answer some basic questions.
-
-While not strictly necessary for regression or visualization, this helps build an intuition for the dataset.
-
-> What's the breakdown of recidivism by age and sex?
-
-These are intuitively, the most important features.
-
-```julia
----
-title: Analyzing Recidivism
-author: Arnav Sood (`arnav.sood@ubc.ca`)
-```
-
-```julia
-println("Generated $(read(`date`, String))")
-```
-
-## Setup
-
-First, let's load some useful packages
-
-```julia
-# using Pkg # uncomment these lines if you need to install packages
-# pkg"add CSV DataFrames HTTP Plots StatsBase"
-using CSV, DataFrames, HTTP, Plots, StatsBase
-using Statistics, LinearAlgebra
-```
-
-And grab the data from the internet
-
-```julia
-url = "https://raw.githubusercontent.com/propublica/compas-analysis/master/compas-scores-two-years.csv"
-res = HTTP.get(url);
-raw = String(res.body);
-master = CSV.read(IOBuffer(raw));
-```
-
-As a sanity check, we can inspect the result
-
-```julia
-first(master, 6) # analogous to head(data)
-```
-
-We can also look at the set of features we have
-
-```julia
-@show names(master);
-```
-
-The key one is `two_year_recid`, which we'll be trying to predict.
-
-## Data Cleaning
-
-First, we need to do some cleaning.
-
-Let's pick a set of reasonable features to work with for the vanilla recidivism problem
-
-```julia
-featureList = [:sex, :age, :age_cat, :race, :priors_count, :c_charge_degree,
-                :decile_score, :score_text]
-```
-
-We can drop all rows with missing data for any of these features
-
-```julia
-data = dropmissing(master, featureList; disallowmissing = true);
-println("Dropped $(nrow(master) - nrow(data)) rows")
-```
-
-Note: There's a version of this, `dropmissing!`, which mutates the DataFrame. This is more efficient with memory. But it's also irreversible (without re-downloading the data). Since it's not too costly, we can keep a copy of the unaltered DataFrame in `master`.
-
-We can also look for subtler data errors
-
-```julia
-filter!(r -> ~ismissing(r.days_b_screening_arrest) && abs(r.days_b_screening_arrest) <= 30, master); # only include rows with less than a month between screening and arrest
-println("Dropped $(nrow(master) - nrow(data)) rows")
-```
-
-The justification here was that these rows mean we don't have data on the correct offense.
-
-## Exploratory Data Analysis (EDA)
+#' ## Exploratory Data Analysis (EDA)
 
 At this stage, we can start to answer some basic questions.
 
@@ -200,6 +118,6 @@ sort!(temp, :decile_score);
 plot(temp[:decile_score], temp[:p])
 ```
 
-So, recidivism risk is at least monotone in decile score. 
+So, recidivism risk is at least monotone in decile score.
 
 > Can we add other features to the plot?
