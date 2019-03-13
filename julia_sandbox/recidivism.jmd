@@ -15,8 +15,8 @@ First, let's load some useful packages
 
 ```julia
 # using Pkg # uncomment these lines if you need to install packages
-# pkg"add CSV DataFrames HTTP Plots StatsBase StatsPlots VegaLite"
-using CSV, DataFrames, HTTP, Plots, StatsBase, StatsPlots, VegaLite
+# pkg"add CSV DataFrames HTTP Plots StatsBase StatsPlots VegaLite CategoricalArrays GLM"
+using CSV, DataFrames, HTTP, Plots, StatsBase, StatsPlots, VegaLite, CategoricalArrays, GLM
 using Statistics, LinearAlgebra
 gr(fmt = :png)
 ```
@@ -115,6 +115,7 @@ This gives us a Cartesian grid for the utility of the decile score over race and
 We could visualize this data as such
 
 ```julia
+    # actual code goes here
 ```
 
 
@@ -135,3 +136,122 @@ So, recidivism risk is at least monotone in decile score, on aggregate.
 [some kind of pull-it-all-together, preferably interactive, visualization]
 
 ## Regression Problem
+
+Let's say we wanted to write our model to predict the `two_year_recid` variable.
+
+Since this is a binary feature, and we have labeled data, we are solving a supervised [classification problem](https://en.wikipedia.org/wiki/Statistical_classification).
+
+### Coding Categorical Variables
+
+The first challenge is to turn our string variables into a more machine-readable form, which might e.g. have ordering.
+
+The solution is to create categorical variables.
+
+```julia
+data[:age_cat] = categorical(data[:age_cat]; ordered = true);
+levels!(data[:age_cat], ["Less than 25", "25 - 45", "Greater than 45"]); # orders the new variable
+```
+
+To see the difference
+
+```julia
+@show typeof(master[:age_cat][1]); # old
+@show typeof(data[:age_cat][1]); # new
+```
+
+Now, for example, we can write logic like
+
+```julia
+@show data[:age_cat][2]
+@show data[:age_cat][50]
+@show data[:age_cat][2] < data[:age_cat][50];
+```
+
+Let's do the rest of the transformations
+
+```julia
+data[:sex] = categorical(data[:sex]);
+
+data[:race] = categorical(data[:race]);
+
+data[:c_charge_degree] = categorical(data[:c_charge_degree]; ordered = true);
+levels!(data[:c_charge_degree], ["M", "F"]); # (M)isdemeanor < (F)elony
+
+data[:score_text] = categorical(data[:score_text]; ordered = true);
+levels!(data[:score_text], ["Low", "Medium", "High"])
+```
+
+This makes it easier to run regression models that are mixed on categorical and continuous data.
+
+### Linear Case
+
+A benchmark model for many applications is a generalized linear model.
+
+Since our response variable is binary, we might consider a simple [probit regression](https://en.wikipedia.org/wiki/Probit_model).
+
+Let's set up a training set
+
+```julia
+function StatsBase.sample(df::AbstractDataFrame, n::Integer=1; replace::Bool=true, ordered::Bool=false) # see https://github.com/JuliaData/DataFrames.jl/pull/997/files
+    df[sample(1:size(df, 1), n, replace=replace, ordered=ordered), :]
+end
+
+training = sample(data, 3000)
+```
+
+And fit a model to that training set
+
+```julia
+linearModel = glm(@formula(two_year_recid ~ race + sex + age_cat + decile_score), training, Binomial(), ProbitLink())
+```
+
+We can interpret the magnitudes and signs of the coefficients for each class.
+
+For example, decile score is positively associated with recidivism within two years, whereas being older than 45 is negatively correlated.
+
+We can judge the performance of this model on the whole data.
+
+```julia
+predictions = predict(linearModel, data);
+map!(x -> x >= 0.5 ? 1 : 0, predictions, predictions);
+println("The model agreed with the outcome in $(count(iszero, predictions - data[:two_year_recid])) cases out of $(nrow(data))")
+```
+
+This isn't bad, for a simple linear model we cooked up on a small set of features.
+
+Let's try to do better. For example, what if we add some interaction terms?
+
+Specifically, let's try to capture two stylized facts from the ProPublica analysis:
+
+1. The decile scores have different accuracies by sex.
+
+2. Being young and male is a greater predictor of criminality than being old and male.
+
+
+```julia
+revisedModel = glm(@formula(two_year_recid ~ race + sex + age_cat + sex&age_cat + sex&decile_score), training, Binomial(), ProbitLink())
+```
+
+As we can see, whereas `sex: Male` is a huge boost to the likelihood of recidivism, being `sex: Male & age_cat: Greater than 45` has an almost equally negative effect.
+
+We can see how this model stacks up
+
+```julia
+predictions = predict(revisedModel, data);
+map!(x -> x >= 0.5 ? 1 : 0, predictions, predictions);
+println("The model agreed with the outcome in $(count(iszero, predictions - data[:two_year_recid])) cases out of $(nrow(data))")
+```
+
+So, about the same as the original model.
+
+### Accuracy Analysis
+
+One of the key criticisms of the ProPublica analysis is that the error of the model was nonuniform; that is, it systematically penalized some demographics and benefitted others.
+
+Let's investigate that for our model.
+
+### Neural Networks
+
+One of the advantages of the function representations known as [Artificial Neural Networks](https://en.wikipedia.org/wiki/Artificial_neural_network) is that they can represent any bounded, continuous function.
+
+However, this [result](https://en.wikipedia.org/wiki/Universal_approximation_theorem) is also a drawback, as it means that without strict discipline, it's very easy for our nets to go astray.
