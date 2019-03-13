@@ -105,16 +105,18 @@ cor(data[:decile_score], data[:two_year_recid])
 To be more precise
 
 ```julia
-data |> @vlplot(
-    :circle,
-    x = {:race},
-    y = {:sex},
-    color = "mean(two_year_recid)",
-    size = "mean(decile_score)",
-)
+for subset in groupby(data, [:sex, :race])
+      println("The correlation for $(levels(subset[:sex])) + $(levels(subset[:race])) is $(cor(subset[:decile_score], subset[:two_year_recid]))")
+end
 ```
 
-This gives us a Cartesian grid over race and sex. The poorly-correlated regions are large lighter circles, or small dark ones. 
+This gives us a Cartesian grid for the utility of the decile score over race and sex.
+
+We could visualize this data as such
+
+```julia
+```
+
 
 Another way to answer this question is
 
@@ -123,9 +125,13 @@ temp = by(filter(row -> row[:id] in data[:id], master),
       [:decile_score], p = :two_year_recid => mean);
 
 sort!(temp, :decile_score);
-plot(temp[:decile_score], temp[:p], legend = false, xlabel = "Decile Score", ylabel = "Mean Recidivism")
+plot(temp[:decile_score], temp[:p], legend = false, xlabel = "Decile Score", ylabel = "Recidivism Frequency")
 ```
 
-So, recidivism risk is at least monotone in decile score.
+So, recidivism risk is at least monotone in decile score, on aggregate.
 
 > Can we add other features to the plot?
+
+[some kind of pull-it-all-together, preferably interactive, visualization]
+
+## Regression Problem
