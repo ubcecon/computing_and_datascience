@@ -2,10 +2,11 @@
 ---
 title: Analyzing Recidivism
 author: Arnav Sood (`arnav.sood@ubc.ca`)
+---
 ```
 
 ```julia
-println("Generated $(read(`date`, String))")
+println("Executed $(read(`date`, String))")
 ```
 
 ## Setup
@@ -14,17 +15,17 @@ First, let's load some useful packages
 
 ```julia
 # using Pkg # uncomment these lines if you need to install packages
-# pkg"add CSV DataFrames HTTP Plots StatsBase"
-using CSV, DataFrames, HTTP, Plots, StatsBase
+# pkg"add CSV DataFrames HTTP Plots StatsBase StatsPlots VegaLite"
+using CSV, DataFrames, HTTP, Plots, StatsBase, StatsPlots, VegaLite
 using Statistics, LinearAlgebra
+gr(fmt = :png)
 ```
 
 And grab the data from the internet
 
 ```julia
 url = "https://raw.githubusercontent.com/propublica/compas-analysis/master/compas-scores-two-years.csv"
-res = HTTP.get(url);
-raw = String(res.body);
+raw = String(HTTP.get(url).body);
 master = CSV.read(IOBuffer(raw));
 ```
 
@@ -46,32 +47,32 @@ The key one is `two_year_recid`, which we'll be trying to predict.
 
 First, we need to do some cleaning.
 
-Let's pick a set of reasonable features to work with for the vanilla recidivism problem
+Let's create a `data` object, so that our transformations won't contaminate the master data source (this isn't too costly here.)
+
+```julia
+data = deepcopy(master);
+```
+
+Next, let's drop all rows that are missing values for some key features:
 
 ```julia
 featureList = [:sex, :age, :age_cat, :race, :priors_count, :c_charge_degree,
-                :decile_score, :score_text]
-```
+                :decile_score, :score_text]; # list of features we require complete data for
 
-We can drop all rows with missing data for any of these features
-
-```julia
-data = dropmissing(master, featureList; disallowmissing = true);
+dropmissing!(data, featureList; disallowmissing = true);
 println("Dropped $(nrow(master) - nrow(data)) rows")
 ```
-
-Note: There's a version of this, `dropmissing!`, which mutates the DataFrame. This is more efficient with memory. But it's also irreversible (without re-downloading the data). Since it's not too costly, we can keep a copy of the unaltered DataFrame in `master`.
 
 We can also look for subtler data errors
 
 ```julia
-filter!(r -> ~ismissing(r.days_b_screening_arrest) && abs(r.days_b_screening_arrest) <= 30, master); # only include rows with less than a month between screening and arrest
+filter!(r -> ~ismissing(r.days_b_screening_arrest) && abs(r.days_b_screening_arrest) <= 30, data); # only include rows with less than a month between screening and arrest
 println("Dropped $(nrow(master) - nrow(data)) rows")
 ```
 
-The justification here was that these rows mean we don't have data on the correct offense.
+The justification here was that such a large gap between sentencing and arrest means that we don't have data on the correct offense.
 
-#' ## Exploratory Data Analysis (EDA)
+## Exploratory Data Analysis (EDA)
 
 At this stage, we can start to answer some basic questions.
 
@@ -79,34 +80,41 @@ While not strictly necessary for regression or visualization, this helps build a
 
 > What's the breakdown of recidivism by age and sex?
 
-These are intuitively, the most important features.
-
 ```julia
-  by(data, [:age_cat, :sex], N = :two_year_recid => sum, p = :two_year_recid => mean )
+temp = by(data, [:age_cat, :sex], N = :two_year_recid => sum, p = :two_year_recid => mean, total = :two_year_recid => length)
 ```
 
-So, whereas men recidivate at strictly higher _levels_ than women for each age category, most of that action is coming from ages 0-45.
+> Can we get a visual snapshot of the data?
 
+Glad you asked.
+
+```julia
+data |> @vlplot(:bar, x=:sex, column = :decile_score, color = :two_year_recid, y = "count()")
+```
+
+Here, the shaded area corresponds to recidivists, and the breakdown is by sex and decile.
 
 > How well do recidivism scores correlate with actual recivisim?
 
-This is the key question. A simple snapshot is:
+One simple snapshot is:
 
 ```julia
-  temp = filter(row -> row[:id] in data[:id], master);
-  cor(temp[:decile_score], temp[:two_year_recid])
+cor(data[:decile_score], data[:two_year_recid])
 ```
 
 To be more precise
 
 ```julia
-temp = filter(row -> row[:id] in data[:id] && row[:two_year_recid] == 1, master);
-p1 = histogram(temp[:decile_score], title = "Decile Scores for Recidivists", legend = false);
-temp = filter(row -> row[:id] in data[:id] && row[:two_year_recid] == 0, master);
-p2 = histogram(temp[:decile_score], title = "Decile Scores for Non-Recidivists", legend = false);
-
-plot(p1, p2, layout = (2, 1))
+data |> @vlplot(
+    :circle,
+    x = {:race},
+    y = {:sex},
+    color = "mean(two_year_recid)",
+    size = "mean(decile_score)",
+)
 ```
+
+This gives us a Cartesian grid over race and sex. The poorly-correlated regions are large lighter circles, or small dark ones. 
 
 Another way to answer this question is
 
@@ -115,7 +123,7 @@ temp = by(filter(row -> row[:id] in data[:id], master),
       [:decile_score], p = :two_year_recid => mean);
 
 sort!(temp, :decile_score);
-plot(temp[:decile_score], temp[:p])
+plot(temp[:decile_score], temp[:p], legend = false, xlabel = "Decile Score", ylabel = "Mean Recidivism")
 ```
 
 So, recidivism risk is at least monotone in decile score.
