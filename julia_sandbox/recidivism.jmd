@@ -255,3 +255,5 @@ Let's investigate that for our model.
 One of the advantages of the function representations known as [Artificial Neural Networks](https://en.wikipedia.org/wiki/Artificial_neural_network) is that they can represent any bounded, continuous function.
 
 However, this [result](https://en.wikipedia.org/wiki/Universal_approximation_theorem) is also a drawback, as it means that without strict discipline, it's very easy for our nets to go astray.
+
+Let's try adapting one for this purpose.
