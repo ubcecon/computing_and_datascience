@@ -1,0 +1,262 @@
+```yaml
+---
+title: Analyzing Recidivism
+author: Arnav Sood (`arnav.sood@ubc.ca`)
+---
+```
+
+```julia
+println("Executed $(read(`date`, String))")
+```
+
+## Setup
+
+First, let's load some useful packages
+
+```julia
+# using Pkg # uncomment these lines if you need to install packages
+# pkg"add CSV DataFrames HTTP Plots StatsBase StatsPlots VegaLite CategoricalArrays GLM"
+using CSV, DataFrames, HTTP, Plots, StatsBase, StatsPlots, VegaLite, CategoricalArrays, GLM
+using Statistics, LinearAlgebra
+gr(fmt = :png)
+```
+
+And grab the data from the internet
+
+```julia
+url = "https://raw.githubusercontent.com/propublica/compas-analysis/master/compas-scores-two-years.csv"
+raw = String(HTTP.get(url).body);
+master = CSV.read(IOBuffer(raw));
+```
+
+As a sanity check, we can inspect the result
+
+```julia
+first(master, 6) # analogous to head(data)
+```
+
+We can also look at the set of features we have
+
+```julia
+@show names(master);
+```
+
+The key one is `two_year_recid`, which we'll be trying to predict.
+
+## Data Cleaning
+
+First, we need to do some cleaning.
+
+Let's create a `data` object, so that our transformations won't contaminate the master data source (this isn't too costly here.)
+
+```julia
+data = deepcopy(master);
+```
+
+Next, let's drop all rows that are missing values for some key features:
+
+```julia
+featureList = [:sex, :age, :age_cat, :race, :priors_count, :c_charge_degree,
+                :decile_score, :score_text]; # list of features we require complete data for
+
+dropmissing!(data, featureList; disallowmissing = true);
+println("Dropped $(nrow(master) - nrow(data)) rows")
+```
+
+We can also look for subtler data errors
+
+```julia
+filter!(r -> ~ismissing(r.days_b_screening_arrest) && abs(r.days_b_screening_arrest) <= 30, data); # only include rows with less than a month between screening and arrest
+println("Dropped $(nrow(master) - nrow(data)) rows")
+```
+
+The justification here was that such a large gap between sentencing and arrest means that we don't have data on the correct offense.
+
+## Exploratory Data Analysis (EDA)
+
+At this stage, we can start to answer some basic questions.
+
+While not strictly necessary for regression or visualization, this helps build an intuition for the dataset.
+
+> What's the breakdown of recidivism by age and sex?
+
+```julia
+temp = by(data, [:age_cat, :sex], N = :two_year_recid => sum, p = :two_year_recid => mean, total = :two_year_recid => length)
+```
+
+> Can we get a visual snapshot of the data?
+
+Glad you asked.
+
+```julia
+data |> @vlplot(:bar, x=:sex, column = :decile_score, color = :two_year_recid, y = "count()")
+```
+
+Here, the shaded area corresponds to recidivists, and the breakdown is by sex and decile.
+
+> How well do recidivism scores correlate with actual recivisim?
+
+One simple snapshot is:
+
+```julia
+cor(data[:decile_score], data[:two_year_recid])
+```
+
+To be more precise
+
+```julia
+for subset in groupby(data, [:sex, :race])
+      println("The correlation for $(levels(subset[:sex])) + $(levels(subset[:race])) is $(cor(subset[:decile_score], subset[:two_year_recid]))")
+end
+```
+
+This gives us a Cartesian grid for the utility of the decile score over race and sex.
+
+We could visualize this data as such
+
+```julia
+    # actual code goes here
+```
+
+
+Another way to answer this question is
+
+```julia
+temp = by(filter(row -> row[:id] in data[:id], master),
+      [:decile_score], p = :two_year_recid => mean);
+
+sort!(temp, :decile_score);
+plot(temp[:decile_score], temp[:p], legend = false, xlabel = "Decile Score", ylabel = "Recidivism Frequency")
+```
+
+So, recidivism risk is at least monotone in decile score, on aggregate.
+
+> Can we add other features to the plot?
+
+[some kind of pull-it-all-together, preferably interactive, visualization]
+
+## Regression Problem
+
+Let's say we wanted to write our model to predict the `two_year_recid` variable.
+
+Since this is a binary feature, and we have labeled data, we are solving a supervised [classification problem](https://en.wikipedia.org/wiki/Statistical_classification).
+
+### Coding Categorical Variables
+
+The first challenge is to turn our string variables into a more machine-readable form, which might e.g. have ordering.
+
+The solution is to create categorical variables.
+
+```julia
+data[:age_cat] = categorical(data[:age_cat]; ordered = true);
+levels!(data[:age_cat], ["Less than 25", "25 - 45", "Greater than 45"]); # orders the new variable
+```
+
+To see the difference
+
+```julia
+@show typeof(master[:age_cat][1]); # old
+@show typeof(data[:age_cat][1]); # new
+```
+
+Now, for example, we can write logic like
+
+```julia
+@show data[:age_cat][2]
+@show data[:age_cat][50]
+@show data[:age_cat][2] < data[:age_cat][50];
+```
+
+Let's do the rest of the transformations
+
+```julia
+data[:sex] = categorical(data[:sex]);
+
+data[:race] = categorical(data[:race]);
+
+data[:c_charge_degree] = categorical(data[:c_charge_degree]; ordered = true);
+levels!(data[:c_charge_degree], ["M", "F"]); # (M)isdemeanor < (F)elony
+
+data[:score_text] = categorical(data[:score_text]; ordered = true);
+levels!(data[:score_text], ["Low", "Medium", "High"])
+```
+
+This makes it easier to run regression models that are mixed on categorical and continuous data.
+
+### Linear Case
+
+A benchmark model for many applications is a generalized linear model.
+
+Since our response variable is binary, we might consider a simple [probit regression](https://en.wikipedia.org/wiki/Probit_model).
+
+Let's set up a training set
+
+```julia
+function StatsBase.sample(df::AbstractDataFrame, n::Integer=1; replace::Bool=true, ordered::Bool=false) # see https://github.com/JuliaData/DataFrames.jl/pull/997/files
+    df[sample(1:size(df, 1), n, replace=replace, ordered=ordered), :]
+end
+
+training = sample(data, 3000)
+```
+
+And fit a model to that training set
+
+```julia
+linearModel = glm(@formula(two_year_recid ~ race + sex + age_cat + decile_score), training, Binomial(), ProbitLink())
+```
+
+We can interpret the magnitudes and signs of the coefficients for each class.
+
+For example, decile score is positively associated with recidivism within two years, whereas being older than 45 is negatively correlated.
+
+We can judge the performance of this model on the whole data.
+
+```julia
+predictions = predict(linearModel, data);
+map!(x -> x >= 0.5 ? 1 : 0, predictions, predictions);
+println("The model agreed with the outcome in $(count(iszero, predictions - data[:two_year_recid])) cases out of $(nrow(data))")
+```
+
+This isn't bad, for a simple linear model we cooked up on a small set of features.
+
+Let's try to do better. For example, what if we add some interaction terms?
+
+Specifically, let's try to capture two stylized facts from the ProPublica analysis:
+
+1. The decile scores have different accuracies by sex.
+
+2. Being young and male is a greater predictor of criminality than being old and male.
+
+
+```julia
+revisedModel = glm(@formula(two_year_recid ~ race + sex + age_cat + sex&age_cat + sex&decile_score), training, Binomial(), ProbitLink())
+```
+
+As we can see, whereas `sex: Male` is a huge boost to the likelihood of recidivism, being `sex: Male & age_cat: Greater than 45` has an almost equally negative effect.
+
+We can see how this model stacks up
+
+```julia
+predictions = predict(revisedModel, data);
+map!(x -> x >= 0.5 ? 1 : 0, predictions, predictions);
+println("The model agreed with the outcome in $(count(iszero, predictions - data[:two_year_recid])) cases out of $(nrow(data))")
+```
+
+So, about the same as the original model.
+
+### Accuracy Analysis
+
+One of the key criticisms of the ProPublica analysis is that the error of the model was nonuniform; that is, it systematically penalized some demographics and benefitted others.
+
+Let's investigate that for our model.
+
+### Neural Networks
+
+One of the advantages of the function representations known as [Artificial Neural Networks](https://en.wikipedia.org/wiki/Artificial_neural_network) is that they can represent any bounded, continuous function.
+
+However, this [result](https://en.wikipedia.org/wiki/Universal_approximation_theorem) is also a drawback, as it means that without strict discipline, it's very easy for our nets to go astray.
+
+Let's try adapting one for this purpose.
+
+```julia
+```
