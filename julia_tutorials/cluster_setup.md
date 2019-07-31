@@ -1,8 +1,11 @@
 ## Notes for using Julia on Compute Canada Clusters
+NOTE: THESE NOTES WERE BEFORE FINDING https://docs.computecanada.ca/wiki/Jupyter
+
+They should be adapted, and likely simplified.
 
 ### Getting an account and an SSH terminal
 - Get a compute canada account https://www.computecanada.ca/research-portal/account-management/apply-for-an-account/
-- If you are on windows: , get a terminal supporting ssh (either https://www.putty.org/ or https://docs.microsoft.com/en-us/windows/wsl/wsl2-install )
+- If you are on windows: , get a terminal supporting ssh (either https://docs.computecanada.ca/wiki/Connecting_with_MobaXTerm or https://docs.microsoft.com/en-us/windows/wsl/wsl2-install )
 
 
 ### One-time Setup
@@ -43,11 +46,14 @@ Then, run `julia` to get a julia commandline and run the command to install IJul
 Then install the notebook server with
 ```julia
 using IJulia
-IJulia.notebook()
+IJulia.jupyterlab()
 ```
 Answer `y` to any questions it asks you to install the notebook server.
 
-When it is done, exit julia with `exit()` and then exit the ssh session.
+When it is done, `ctrl-c` a few times to exit julia.  Then in the terminal run
+```bash
+ jupyter notebook --generate-config
+ ```
 
 ## Starting a normal julia terminal
 You can just go `ssh cedar.computecanada.ca` to start a shell
@@ -67,12 +73,20 @@ ssh cedar.computecanada.ca
 ```
 and then the following, which may take some time to execute
 ```
-jupyter notebook --no-browser --port=8889
+jupyter lab --no-browser --port=8889
 ```
-It will list out a url in the output.  Copy and paste the content after the token, e.g. ` http://127.0.0.1:8889/?token=03990e819e40c063f9a754e10442030cdd1b1a06e1f21a99`
 
-The first time you use the system, you can that token to setup a password (CHECK EXACT STEPS!)
+To access it, on your local browser go to `http://127.0.0.1:8889/`
 
-## What other stuff is available on the cluster
-At that point, it is easiest to close the ssh terminal to get those things updated.
+Note: the first time you do this, take the token that is in the output of the window (e.g. `http://127.0.0.1:8889/?token=03990e819e40c063f9a754e10442030cdd1b1a06e1f21a99` becomes `03990e819e40c063f9a754e10442030cdd1b1a06e1f21a99`) and paste it into the login screen.  You may want to use token and setup a password (which could be blank).
+
+
+## More from ComputeCanada  (for future organization)
+See https://docs.computecanada.ca/wiki/Connecting_with_MobaXTerm fora  windows termianl
+
+
 https://docs.computecanada.ca/wiki/Available_software
+
+More on jupyter and ssh on computecanada:
+- https://docs.computecanada.ca/wiki/Jupyter
+- https://docs.computecanada.ca/wiki/SSH_tunnelling
