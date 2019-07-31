@@ -46,10 +46,16 @@ julia -e 'using Pkg; pkg"add IJulia"'
 In a ssh shell, you need to change out of home first,
 ```julia
 cd /project
+source $HOME/jupyter_py3/bin/activate
 ```
 Then replace YOURUSERNAME below and execute
 ```
 salloc --time=1:0:0 --ntasks=1 --cpus-per-task=2 --mem-per-cpu=1024M --account=def-YOURUSERNAME srun $VIRTUAL_ENV/bin/notebook.sh
+```
+
+Then in another screen start a tunnel (replaceing the cdrXXX and username)
+```julia
+ssh -L 8888:cdrXXX.int.cedar.computecanada.ca:8888 USERNAME@cedar.computecanada.ca
 ```
 
 
@@ -133,7 +139,10 @@ jupyter lab --no-browser --port=8889
 To access it, on your local browser go to `http://127.0.0.1:8889/`
 
 Note: the first time you do this, take the token that is in the output of the window (e.g. `http://127.0.0.1:8889/?token=03990e819e40c063f9a754e10442030cdd1b1a06e1f21a99` becomes `03990e819e40c063f9a754e10442030cdd1b1a06e1f21a99`) and paste it into the login screen.  You may want to use token and setup a password (which could be blank).
+cdr544.int.cedar.computecanada.ca:8888
 
+
+ssh -L 8888:cdr544.int.cedar.computecanada.ca:8888 jlperla@cedar.computecanada.ca
 
 ## More from ComputeCanada  (for future organization)
 See https://docs.computecanada.ca/wiki/Connecting_with_MobaXTerm fora  windows termianl
