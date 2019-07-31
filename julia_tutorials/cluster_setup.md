@@ -1,9 +1,63 @@
 ## Notes for using Julia on Compute Canada Clusters
+
+## Getting Started
+
+- Get a compute canada account https://www.computecanada.ca/research-portal/account-management/apply-for-an-account/
+- Make sure you have access to a ssh shell
+  - On windows, you will want to install https://docs.computecanada.ca/wiki/Connecting_with_MobaXTerm as a terminal
+  - Needed? You could get keygens.  Either follow the instructions in the MobaXTerm "Tools/follow the "Key Pair" instructions or open up a windows powershell terminal and go `ssh-keygen`.
+  
+ Once you are logged in, it is best to edit your `.bashrc` so that Julia is always available.  To do that you could use vim
+```bash
+vim .bashrc
+```
+Then edit the file to add something like:
+```
+module load gcc/7.3.0
+module load julia/1.1.1
+module load python/3.6
+```
+In vim, you go `<ESC> i` to enter insert mode, and when you are done `<ESC> :wq!` to save and exit.
+ 
+ ### One-time Jupyter Support Instllation
+ 
+ In a ssh 
+```bash
+module load gcc/7.3.0
+module load julia/1.1.1
+module load python/3.6
+virtualenv $HOME/jupyter_py3
+source $HOME/jupyter_py3/bin/activate
+pip install jupyter
+pip install jupyterlab
+echo -e '#!/bin/bash\nunset XDG_RUNTIME_DIR\njupyter lab --ip $(hostname -f) --no-browser' > $VIRTUAL_ENV/bin/notebook.sh
+chmod u+x $VIRTUAL_ENV/bin/notebook.sh
+```
+Then to add in Julia support, first run the notebook (I think this is necessary?  Remove if not).
+```bash
+$VIRTUAL_ENV/bin/notebook.sh
+```
+Then `<ctrl-c>` twice to close it and then run
+```bash
+julia -e 'using Pkg; pkg"add IJulia"'
+``` 
+
+## Starting Jupyter notebooks
+In a ssh shell, you need to change out of home first,
+```julia
+cd /project
+```
+Then replace YOURUSERNAME below and execute
+```
+salloc --time=1:0:0 --ntasks=1 --cpus-per-task=2 --mem-per-cpu=1024M --account=def-YOURUSERNAME srun $VIRTUAL_ENV/bin/notebook.sh
+```
+
+
+# OLD: Getting an account and an SSH terminal
 NOTE: THESE NOTES WERE BEFORE FINDING https://docs.computecanada.ca/wiki/Jupyter
 
-They should be adapted, and likely simplified.
+They should be adapted, likely simplified.
 
-### Getting an account and an SSH terminal
 - Get a compute canada account https://www.computecanada.ca/research-portal/account-management/apply-for-an-account/
 - If you are on windows: , get a terminal supporting ssh (either https://docs.computecanada.ca/wiki/Connecting_with_MobaXTerm or https://docs.microsoft.com/en-us/windows/wsl/wsl2-install )
 
@@ -90,3 +144,4 @@ https://docs.computecanada.ca/wiki/Available_software
 More on jupyter and ssh on computecanada:
 - https://docs.computecanada.ca/wiki/Jupyter
 - https://docs.computecanada.ca/wiki/SSH_tunnelling
+
